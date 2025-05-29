@@ -1,0 +1,11 @@
+                <div class="mb-4">
+                    <label for="{{column}}" class="form-label">{{column_title}}</label>
+                    <x-input.select2 
+                        name="{{column}}" 
+                        id="{{column}}"
+                        class="form-control {{ $errors->has('{{column}}') ? 'is-invalid' : '' }}" 
+                        placeholder="Pilih {{column_title}}"
+                        :options="{{column_value}}" 
+                        selected="{{ old('{{column}}', ${{modelVariable}}?->{{column}}) }}" />
+                    @error('{{column}}')<small class="invalid-feedback">{{ $message }}</small>@enderror
+                </div>

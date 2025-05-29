@@ -1,0 +1,27 @@
+<x-layout.app title="Perbarui {{modelTitle}}" activeMenu="{{modelRoute}}.edit" :withError="false">
+    <div class="container my-5">
+        <x-breadcrumb title="Perbarui {{modelTitle}}" :breadcrumbs="[
+            ['label' => 'Dashboard', 'url' => url('/')],
+            ['label' => '{{modelTitle}}', 'url' => route('{{modelRoute}}.index')],
+            ['label' => 'Perbarui {{modelTitle}}'],
+        ]" />
+
+        <div class="card">
+            <div class="card-body">
+                <x-error-list />
+
+                <form action="{{ route('{{modelRoute}}.update', ${{modelVariable}}) }}" method="POST" role="form" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+
+                    @include('{{modelRoute}}.includes.form')
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary me-2">Perbarui</button>
+                        <a href="{{ route('{{modelRoute}}.index') }}" class="btn btn-secondary">Kembali</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-layout.app>

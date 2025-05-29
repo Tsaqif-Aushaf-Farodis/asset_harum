@@ -1,0 +1,11 @@
+                <div class="mb-4">
+                    <label for="{{column}}" class="form-label">{{column_title}}</label>
+                    <input 
+                        type="text" 
+                        name="{{column}}" 
+                        class="form-control {{ $errors->has('{{column}}') ? 'is-invalid' : '' }}" 
+                        id="{{column}}" 
+                        value="{{ old('{{column}}', ${{modelVariable}}?->{{column}}) }}" 
+                        placeholder="Masukkan {{column_title}}" />
+                    @error('{{column}}')<small class="invalid-feedback">{{ $message }}</small>@enderror
+                </div>

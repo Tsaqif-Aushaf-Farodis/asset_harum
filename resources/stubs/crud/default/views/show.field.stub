@@ -1,0 +1,4 @@
+                                <div class="col-md-4">
+                                    <label for="first-name-horizontal">{{column_title}}</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ ${{modelVariable}}->{{column}} }}</div>

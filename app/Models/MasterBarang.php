@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class MasterBarang extends Model
+{
+    use HasFactory;
+
+    protected $table = 'master_barang';
+
+    protected $fillable = [
+        'kode_barang',
+        'nama_barang',
+        'deskripsi_barang',
+        'kategori_barang_id',
+        'created_by',
+        'updated_by',
+    ];
+
+    /**
+     * Relasi ke tabel kategori_barang
+     */
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriBarang::class, 'kategori_barang_id');
+    }
+
+    /**
+     * Relasi ke user yang membuat data
+     */
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Relasi ke user yang mengupdate data
+     */
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+}

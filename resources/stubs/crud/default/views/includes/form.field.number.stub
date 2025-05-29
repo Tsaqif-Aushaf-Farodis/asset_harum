@@ -1,0 +1,8 @@
+                <div class="mb-4">
+                    <label for="{{column}}" class="form-label">{{column_title}}</label>
+                    <x-input.currency name="{{column}}" id="{{column}}"
+                        value="{{ old('{{column}}', ${{modelVariable}}?->{{column}}) }}" 
+                        placeholder="Masukkan {{column_title}}"
+                        class="form-control text-end {{ $errors->has('{{column}}') ? 'is-invalid' : '' }}" />
+                    @error('{{column}}')<small class="invalid-feedback">{{ $message }}</small>@enderror
+                </div>
