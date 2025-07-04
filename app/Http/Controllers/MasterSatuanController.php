@@ -62,7 +62,9 @@ class MasterSatuanController extends Controller implements HasMiddleware
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            
+            	'kode_satuan' => 'required|string|max:255',
+                'nama_satuan' => 'required|string|max:255',
+                'deskripsi_satuan' => 'nullable|string',
         ]);
 
         try {
@@ -90,7 +92,10 @@ class MasterSatuanController extends Controller implements HasMiddleware
     public function update(Request $request, MasterSatuan $masterSatuan): RedirectResponse
     {
         $validatedData = $request->validate([
-            
+            	'kode_satuan' => 'required|string|max:255',
+	'nama_satuan' => 'required|string|max:255',
+	'deskripsi_satuan' => 'nullable|string',
+	'is_active' => 'required|boolean',
         ]);
 
         try {

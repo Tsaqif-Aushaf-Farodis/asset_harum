@@ -8,12 +8,117 @@ $nav = [
             'route' => 'master-barang.index',
             'permissions' => ['master-barang view']
         ],
-        // [
-        //     "title" => "Layanan",
-        //     "icon" => '<i class="menu-icon tf-icons bx bx-grid-alt"></i>',
-        //     'route' => 'layanan.index',
-        //     'permissions' => ['layanan view']
-        // ],       
+         [
+            "title" => "Permohonan",
+            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Form Permohonan',
+                    'route' => 'form-permohonan',
+                    'permissions' => null
+                ],
+                [
+                    'title' => 'Riwayat Permohonan',
+                    'route' => null,
+                    'permissions' => null
+                ],
+            ]
+        ],  
+        [
+            "title" => "Inventaris",
+            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Pengadaan Barang',
+                    'route' => 'pengadaan-barang.index',
+                    'permissions' => ['pengadaan-barang view']
+                ],
+                [
+                    'title' => 'Tanah',
+                    'route' => 'pengadaan-barang.index',
+                    'permissions' => ['pengadaan-barang view']
+                ],
+                 [
+                    'title' => 'Bangunan',
+                    'route' => 'pengadaan-barang.index',
+                    'permissions' => ['pengadaan-barang view']
+                ],
+                [
+                    'title' => 'Mutasi',
+                    'route' => 'pengadaan-barang.index',
+                    'permissions' => ['pengadaan-barang view']
+                ],
+                [
+                    'title' => 'Non Aktif',
+                    'route' => 'pengadaan-barang.index',
+                    'permissions' => ['pengadaan-barang view']
+                ],
+                [
+                    'title' => 'Barang Keluar',
+                    'route' => 'pengadaan-barang.index',
+                    'permissions' => ['pengadaan-barang view']
+                ],
+            ]
+        ],     
+           [
+            "title" => "Opname",
+            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Generate Opname',
+                    'route' => null,
+                    'permissions' => null
+                ],
+                [
+                    'title' => 'Opname',
+                    'route' => null,
+                    'permissions' => null
+                ],
+            ]
+        ],  
+         [
+            "title" => "Peminjaman",
+            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Form Peminjaman',
+                    'route' => null,
+                    'permissions' => null
+                ],
+                [
+                    'title' => 'Riwayat Peminjaman',
+                    'route' => null,
+                    'permissions' => null
+                ],
+            ]
+        ],  
+        [
+            "title" => "Pengembalian",
+            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Form Pengembalian',
+                    'route' => null,
+                    'permissions' => null
+                ],
+                [
+                    'title' => 'Riwayat Pengembalian',
+                    'route' => null,
+                    'permissions' => null
+                ],
+            ]
+        ],  
+         [
+            "title" => "Laporan",
+            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Form Pengembalian',
+                    'route' => null,
+                    'permissions' => null
+                ],
+            ]
+        ],  
     ],
     "Misc" => [
          [
@@ -37,11 +142,23 @@ $nav = [
                     'route' => 'master-lokasi.index',
                     'permissions' => ['master-lokasi view']
                 ],
+                //sub lokasi
+                [
+                    'title' => 'Master Sub Lokasi',
+                    'route' => 'master-sub-lokasi.index',
+                    'permissions' => ['master-sub-lokasi view']
+                ],
                 //master satuan
                 [
                     'title' => 'Master Satuan',
                     'route' => 'master-satuan.index',
                     'permissions' => ['master-satuan view']
+                ],
+                //master status
+                [
+                    'title' => 'Master Status',
+                    'route' => 'master-status.index',
+                    'permissions' => ['master-status view']
                 ],
             ],
         ],

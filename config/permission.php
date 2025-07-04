@@ -261,6 +261,39 @@ return [
                 'master-barang delete',
             ]
         ],
+        //master status
+        [
+            'group' => 'master status',
+            'pengguna' => ['admin'],
+            'access' => [
+                'master-status view',
+                'master-status create',
+                'master-status edit',
+                'master-status delete',
+            ]
+        ],
+        //pengadaan barang
+        [
+            'group' => 'pengadaan barang',
+            'pengguna' => ['admin'],
+            'access' => [
+                'pengadaan-barang view',
+                'pengadaan-barang create',
+                'pengadaan-barang edit',
+                'pengadaan-barang delete',
+            ]
+        ],  
+        //master sub lokasi
+        [
+            'group' => 'master sub lokasi',
+            'pengguna' => ['admin'],
+            'access' => [
+                'master-sub-lokasi view',
+                'master-sub-lokasi create',
+                'master-sub-lokasi edit',
+                'master-sub-lokasi delete',
+            ]
+        ],
         
     ]
 ];

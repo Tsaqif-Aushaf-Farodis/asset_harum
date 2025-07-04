@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('kode_barang')->unique();
             $table->string('nama_barang');
+            $table->string('merk_barang')->nullable();
+            $table->string('tipe_barang')->nullable();
+            $table->year('tahun_barang')->nullable();
             $table->text('deskripsi_barang')->nullable();
             $table->unsignedBigInteger('kategori_barang_id');
             $table->foreign('kategori_barang_id')->references('id')->on('kategori_barang')->onDelete('cascade');

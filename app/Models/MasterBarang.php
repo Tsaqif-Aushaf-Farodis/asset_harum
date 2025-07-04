@@ -12,8 +12,11 @@ class MasterBarang extends Model
     protected $table = 'master_barang';
 
     protected $fillable = [
-        'kode_barang',
+       'kode_barang',
         'nama_barang',
+        'merk_barang',
+        'tipe_barang',
+        'tahun_barang',
         'deskripsi_barang',
         'kategori_barang_id',
         'created_by',

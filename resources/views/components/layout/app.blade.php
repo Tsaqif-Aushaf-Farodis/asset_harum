@@ -52,7 +52,7 @@
         <div class="layout-container">
             <!-- Toast default -->
             @if (isset($withError) ? $withError : false)
-                <x-bs-toast />
+            <x-bs-toast />
             @endif
 
             <!-- Navbar -->
@@ -89,12 +89,12 @@
     @stack('script')
 
     @session('noback')
-        <script type="text/javascript">
-            window.history.pushState(null, null, window.location.href);
+    <script type="text/javascript">
+        window.history.pushState(null, null, window.location.href);
             window.onpopstate = function() {
                 window.history.pushState(null, null, window.location.href);
             };
-        </script>
+    </script>
     @endsession
 </body>
 

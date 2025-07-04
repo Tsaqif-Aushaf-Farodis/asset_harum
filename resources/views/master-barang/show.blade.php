@@ -55,6 +55,18 @@
                                 </div>
                                 <div class="col-md-8 form-group">: {{ $masterBarang->nama_barang }}</div>
                                 <div class="col-md-4">
+                                    <label for="first-name-horizontal">Merk Barang</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->merk_barang }}</div>
+                                <div class="col-md-4">
+                                    <label for="first-name-horizontal">Tipe Barang</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->tipe_barang }}</div>
+                                <div class="col-md-4">
+                                    <label for="first-name-horizontal">Tahun Barang</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->tahun_barang }}</div>
+                                <div class="col-md-4">
                                     <label for="first-name-horizontal">Deskripsi Barang</label>
                                 </div>
                                 <div class="col-md-8 form-group">: {{ $masterBarang->deskripsi_barang }}</div>

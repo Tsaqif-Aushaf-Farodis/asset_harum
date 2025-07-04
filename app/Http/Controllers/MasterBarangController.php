@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterBarang;
+use App\Models\KategoriBarang;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -55,18 +57,24 @@ class MasterBarangController extends Controller implements HasMiddleware
     public function create(): View
     {
         $masterBarang = new MasterBarang();
+        $kategoriList = KategoriBarang::pluck('nama_kategori_barang', 'id')->toArray();
 
-        return view('master-barang.create', compact('masterBarang'));
+        return view('master-barang.create', compact('masterBarang', 'kategoriList'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            	'kode_barang' => 'required|string|max:255',
-	'nama_barang' => 'required|string|max:255',
-	'deskripsi_barang' => 'nullable|string',
-	'kategori_barang_id' => 'required|integer',
+            'kode_barang' => 'required|string|max:255',
+            'nama_barang' => 'required|string|max:255',
+            'merk_barang' => 'nullable|string|max:255',
+            'tipe_barang' => 'nullable|string|max:255',
+            'tahun_barang' => 'nullable|string',
+            'deskripsi_barang' => 'nullable|string',
+            'kategori_barang_id' => 'required|integer',
         ]);
+
+        $validatedData['created_by'] = auth()->id();
 
         try {
             MasterBarang::create($validatedData);
@@ -87,17 +95,24 @@ class MasterBarangController extends Controller implements HasMiddleware
 
     public function edit(MasterBarang $masterBarang): View
     {
-        return view('master-barang.edit', compact('masterBarang'));
+        $kategoriList = KategoriBarang::pluck('nama_kategori_barang')->toArray();
+
+        return view('master-barang.edit', compact('masterBarang', 'kategoriList'));
     }
 
     public function update(Request $request, MasterBarang $masterBarang): RedirectResponse
     {
         $validatedData = $request->validate([
-            	'kode_barang' => 'required|string|max:255',
-	'nama_barang' => 'required|string|max:255',
-	'deskripsi_barang' => 'nullable|string',
-	'kategori_barang_id' => 'required|integer',
+            'kode_barang' => 'required|string|max:255',
+            'nama_barang' => 'required|string|max:255',
+            'merk_barang' => 'nullable|string|max:255',
+            'tipe_barang' => 'nullable|string|max:255',
+            'tahun_barang' => 'nullable|string',
+            'deskripsi_barang' => 'nullable|string',
+            'kategori_barang_id' => 'required|integer',
         ]);
+
+        $validatedData['updated_by'] = auth()->id();
 
         try {
             $masterBarang->update($validatedData);
