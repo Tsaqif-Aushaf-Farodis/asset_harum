@@ -39,6 +39,11 @@ class PengadaanBarang extends Model
     {
         return $this->belongsTo(MasterStatus::class, 'status_id');
     }
+    
+    public function status()
+    {
+        return $this->belongsTo(MasterStatus::class, 'status_id');
+    }
     public function satuan()
     {
         return $this->belongsTo(MasterSatuan::class, 'satuan_id');
@@ -50,5 +55,20 @@ class PengadaanBarang extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+     public function tanahDetail()
+    {
+        return $this->hasOne(TanahDetail::class, 'pengadaan_id');
+    }
+
+    public function bangunanDetail()
+    {
+        return $this->hasOne(BangunanDetail::class, 'pengadaan_id');
+    }
+
+    public function kendaraanDetail()
+    {
+        return $this->hasOne(KendaraanDetail::class, 'pengadaan_id');
     }
 }

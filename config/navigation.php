@@ -35,13 +35,18 @@ $nav = [
                 ],
                 [
                     'title' => 'Tanah',
-                    'route' => 'pengadaan-barang.index',
-                    'permissions' => ['pengadaan-barang view']
+                    'route' => 'tanah.index',
+                    'permissions' => ['tanah view']
                 ],
                  [
                     'title' => 'Bangunan',
-                    'route' => 'pengadaan-barang.index',
-                    'permissions' => ['pengadaan-barang view']
+                    'route' => 'bangunan.index',
+                    'permissions' => ['bangunan view']
+                ],
+                 [
+                    'title' => 'Kendaraan',
+                    'route' => 'kendaraan.index',
+                    'permissions' => ['kendaraan view']
                 ],
                 [
                     'title' => 'Mutasi',

@@ -1,0 +1,258 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\PengadaanBarang;
+use App\Models\TanahDetail;
+use App\Models\MasterBarang;
+use App\Models\MasterLokasi;
+use App\Models\MasterSubLokasi;
+use App\Models\MasterStatus;
+use App\Models\MasterSatuan;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use \Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+class TanahController extends Controller implements HasMiddleware
+{
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:tanah view', only: ['index', 'show']),
+            new Middleware('permission:tanah create', only: ['create', 'store']),
+            new Middleware('permission:tanah edit', only: ['edit', 'update']),
+            new Middleware('permission:tanah delete', only: ['destroy']),
+        ];
+    }
+
+    public function index(Request $request): View
+    {
+        $query = PengadaanBarang::whereHas('barang.kategori', function($q) {
+            $q->where('nama_kategori_barang', 'LIKE', '%tanah%');
+        });
+
+        $except = ['created_by', 'updated_by'];
+
+        $columns = collect($query->getModel()->getFillable())->filter(function ($item) use ($except) {
+            return !in_array($item, $except);
+        })->toArray();
+
+        $selectedColumns = $request->get('col', $columns);
+
+        if ($search = $request->get('search')) {
+            $query->where(function ($query) use ($search, $selectedColumns) {
+                foreach ($selectedColumns as $column) {
+                    $query->orWhere($column, 'like', '%' . $search . '%');
+                }
+            });
+        }
+        
+        $tanahData = $query->with(['tanahDetail', 'barang', 'lokasi.lokasi', 'status'])->paginate(10);
+
+        if ($request->header('HX-Request')) {
+            return view('tanah.includes.index-table', compact('tanahData'));
+        }
+
+        return view('tanah.index', compact('tanahData', 'columns', 'selectedColumns'));
+    }
+
+    public function create(): View
+    {
+        $pengadaanBarang = new PengadaanBarang();
+        $tanahDetail = new TanahDetail();
+        
+        // Filter barang yang kategorinya tanah
+        $barangList = MasterBarang::whereHas('kategori', function($q) {
+            $q->where('nama_kategori_barang', 'LIKE', '%tanah%');
+        })->pluck('nama_barang', 'id')->toArray();
+        
+        $lokasiList = MasterSubLokasi::with('lokasi')->get()->mapWithKeys(function ($item) {
+            $label = $item->lokasi->nama_lokasi . ' - ' . $item->nama_sub_lokasi;
+            return [$item->id => $label];
+        })->toArray();
+        
+        $statusList = MasterStatus::pluck('nama_status', 'id')->toArray();
+        $satuanList = MasterSatuan::pluck('nama_satuan', 'id')->toArray();
+
+        return view('tanah.create', compact('pengadaanBarang', 'tanahDetail', 'barangList', 'lokasiList', 'statusList', 'satuanList'));
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validatedData = $request->validate([
+            'barang_id' => 'required|integer',
+            'lokasi_id' => 'required|integer',
+            'sumber' => 'required|string|max:100',
+            'status' => 'required|in:baru,bekas,hibah',
+            'status_id' => 'required|integer',
+            'tanggal_pengadaan' => 'required|date',
+            'jumlah' => 'required|integer',
+            'satuan_id' => 'required|integer',
+            'harga_satuan' => 'required|numeric',
+            'total_harga' => 'required|numeric',
+            'keterangan' => 'nullable|string',
+            // Tanah detail fields
+            'luas' => 'required|numeric',
+            'status_tanah' => 'required|string|max:100',
+            'sertifikat_nomor' => 'nullable|string|max:100',
+            'sertifikat_tanggal' => 'nullable|date',
+            'penggunaan' => 'nullable|string|max:255',
+            'lokasi_detail' => 'nullable|string|max:255',
+        ]);
+
+        $barangData = MasterBarang::with('kategori')->find($validatedData['barang_id']);
+
+        $kodeInventaris = $barangData->kode_barang . '-' .
+            $barangData->kategori->kode_kategori_barang . '-' .
+            MasterSubLokasi::find($validatedData['lokasi_id'])->kode_sub_lokasi . '-' .
+            date('m', strtotime($validatedData['tanggal_pengadaan'])) . '-' .
+            date('Y', strtotime($validatedData['tanggal_pengadaan'])) . '-' .
+            PengadaanBarang::whereMonth('tanggal_pengadaan', date('m', strtotime($validatedData['tanggal_pengadaan'])))
+                ->whereYear('tanggal_pengadaan', date('Y', strtotime($validatedData['tanggal_pengadaan'])))
+                ->count() + 1;
+
+        $pengadaanData = array_intersect_key($validatedData, array_flip([
+            'barang_id', 'lokasi_id', 'sumber', 'status', 'status_id', 
+            'tanggal_pengadaan', 'jumlah', 'satuan_id', 'harga_satuan', 
+            'total_harga', 'keterangan'
+        ]));
+        
+        $pengadaanData['kode_inventaris'] = $kodeInventaris;
+        $pengadaanData['created_by'] = auth()->id();
+
+        try {
+            $pengadaan = PengadaanBarang::create($pengadaanData);
+            
+            $tanahDetailData = array_intersect_key($validatedData, array_flip([
+                'luas', 'status_tanah', 'sertifikat_nomor', 'sertifikat_tanggal', 
+                'penggunaan', 'lokasi_detail'
+            ]));
+            $tanahDetailData['pengadaan_id'] = $pengadaan->id;
+            $tanahDetailData['lokasi'] = $tanahDetailData['lokasi_detail'] ?? null;
+            unset($tanahDetailData['lokasi_detail']);
+            
+            TanahDetail::create($tanahDetailData);
+            
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->with('error', 'Terjadi kesalahan saat membuat data.');
+        }
+
+        return redirect()->route('tanah.index')
+            ->with('success', 'Data Tanah berhasil dibuat');
+    }
+
+    public function show(PengadaanBarang $tanah): View
+    {
+        $tanah->load(['tanahDetail', 'barang', 'lokasi.lokasi', 'status']);
+        return view('tanah.show', compact('tanah'));
+    }
+
+    public function edit(PengadaanBarang $tanah): View
+    {
+        $tanah->load('tanahDetail');
+        
+        $barangList = MasterBarang::whereHas('kategori', function($q) {
+            $q->where('nama_kategori_barang', 'LIKE', '%tanah%');
+        })->pluck('nama_barang', 'id')->toArray();
+        
+        $lokasiList = MasterSubLokasi::with('lokasi')->get()->mapWithKeys(function ($item) {
+            $label = $item->lokasi->nama_lokasi . ' - ' . $item->nama_sub_lokasi;
+            return [$item->id => $label];
+        })->toArray();
+        
+        $statusList = MasterStatus::pluck('nama_status', 'id')->toArray();
+        $satuanList = MasterSatuan::pluck('nama_satuan', 'id')->toArray();
+
+        return view('tanah.edit', compact('tanah', 'barangList', 'lokasiList', 'statusList', 'satuanList'));
+    }
+
+    public function update(Request $request, PengadaanBarang $tanah): RedirectResponse
+    {
+        $validatedData = $request->validate([
+            'kode_inventaris' => 'required|string|max:255',
+            'barang_id' => 'required|integer',
+            'lokasi_id' => 'required|integer',
+            'sumber' => 'required|string|max:100',
+            'status_id' => 'required|integer',
+            'tanggal_pengadaan' => 'required|date',
+            'jumlah' => 'required|integer',
+            'satuan_id' => 'required|integer',
+            'harga_satuan' => 'required|numeric',
+            'total_harga' => 'required|numeric',
+            'keterangan' => 'nullable|string',
+            // Tanah detail fields
+            'luas' => 'required|numeric',
+            'status_tanah' => 'required|string|max:100',
+            'sertifikat_nomor' => 'nullable|string|max:100',
+            'sertifikat_tanggal' => 'nullable|date',
+            'penggunaan' => 'nullable|string|max:255',
+            'lokasi_detail' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            $pengadaanData = array_intersect_key($validatedData, array_flip([
+                'kode_inventaris', 'barang_id', 'lokasi_id', 'sumber', 'status_id', 
+                'tanggal_pengadaan', 'jumlah', 'satuan_id', 'harga_satuan', 
+                'total_harga', 'keterangan'
+            ]));
+            
+            $tanah->update($pengadaanData);
+            
+            $tanahDetailData = array_intersect_key($validatedData, array_flip([
+                'luas', 'status_tanah', 'sertifikat_nomor', 'sertifikat_tanggal', 
+                'penggunaan', 'lokasi_detail'
+            ]));
+            $tanahDetailData['lokasi'] = $tanahDetailData['lokasi_detail'] ?? null;
+            unset($tanahDetailData['lokasi_detail']);
+            
+            if ($tanah->tanahDetail) {
+                $tanah->tanahDetail->update($tanahDetailData);
+            } else {
+                $tanahDetailData['pengadaan_id'] = $tanah->id;
+                TanahDetail::create($tanahDetailData);
+            }
+            
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == '23000') {
+                return redirect()->back()
+                    ->withInput($request->all())
+                    ->with('error', 'Data tanah ini sudah digunakan dan tidak dapat diperbarui.');
+            }
+            return redirect()->back()
+                ->withInput($request->all())
+                ->with('error', 'Terjadi kesalahan saat memperbarui data.');
+        }
+
+        return redirect()->route('tanah.index')
+            ->with('success', 'Data Tanah berhasil diperbarui');
+    }
+
+    public function destroy(PengadaanBarang $tanah): RedirectResponse
+    {
+        try {
+            $tanah->tanahDetail?->delete();
+            $tanah->delete();
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == '23000') {
+                return redirect()->route('tanah.index')
+                    ->with('error', 'Data tanah ini sudah digunakan dan tidak dapat dihapus.');
+            }
+            return redirect()->route('tanah.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus data.');
+        }
+
+        return redirect()->route('tanah.index')
+            ->with('success', 'Data Tanah berhasil dihapus');
+    }
+
+    public function generateQrCode(PengadaanBarang $tanah): View
+    {
+        $qrCode = QrCode::size(200)->generate($tanah->kode_inventaris);
+        return view('tanah.qr-code', compact('tanah', 'qrCode'));
+    }
+}
