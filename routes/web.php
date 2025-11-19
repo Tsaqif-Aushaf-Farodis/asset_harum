@@ -9,7 +9,9 @@ use App\Http\Controllers\MasterBarangController;
 use App\Http\Controllers\MasterStatusController;
 use App\Http\Controllers\PengadaanBarangController;
 use App\Http\Controllers\MasterSubLokasiController;
-use App\Http\Controllers\DummyController;
+use App\Http\Controllers\TanahController;
+use App\Http\Controllers\BangunanController;
+use App\Http\Controllers\KendaraanController;
 use Illuminate\Support\Facades\Route;
 
 require('auth.php');
@@ -37,7 +39,20 @@ Route::middleware('auth')->group(function () {
     Route::resource('master-status', MasterStatusController::class);
     Route::resource('pengadaan-barang', PengadaanBarangController::class);
     Route::resource('master-sub-lokasi', MasterSubLokasiController::class);
+<<<<<<< HEAD
     Route::resource('permohonan', \App\Http\Controllers\PermohonanController::class);
+=======
+    
+    // Asset routes
+    Route::resource('tanah', TanahController::class);
+    Route::resource('bangunan', BangunanController::class);
+    Route::resource('kendaraan', KendaraanController::class);
+    
+    // QR Code routes
+    Route::get('/tanah/{tanah}/qr-code', [TanahController::class, 'generateQrCode'])->name('tanah.qr-code');
+    Route::get('/bangunan/{bangunan}/qr-code', [BangunanController::class, 'generateQrCode'])->name('bangunan.qr-code');
+    Route::get('/kendaraan/{kendaraan}/qr-code', [KendaraanController::class, 'generateQrCode'])->name('kendaraan.qr-code');
+>>>>>>> e8fff93bdc027d00f811db11fb42358c47f6ff75
 
 
     Route::get('/generate-opname', [DummyController::class, 'generateOpname'])->name('dummy.generate-opname');

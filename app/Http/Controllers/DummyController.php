@@ -3,52 +3,52 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DummyController extends Controller
 {
-    public function formPermohonan()
+    public function formPermohonan(): View
     {
         return view('dummy.form-permohonan');
     }
-
-    public function riwayatPermohonan()
+    
+    public function riwayatPermohonan(): View
     {
         return view('dummy.riwayat-permohonan');
     }
-
-    public function generateOpname()
+    
+    public function generateOpname(): View
     {
         return view('dummy.generate-opname');
     }
-
-    public function opname()
+    
+    public function opname(): View
     {
         return view('dummy.opname');
     }
-
-    public function formPeminjaman()
+    
+    public function formPeminjaman(): View
     {
         return view('dummy.form-peminjaman');
     }
-
-    public function riwayatPeminjaman()
+    
+    public function riwayatPeminjaman(): View
     {
         return view('dummy.riwayat-peminjaman');
     }
-
-    public function formPengembalian()
+    
+    public function formPengembalian(): View
     {
         return view('dummy.form-pengembalian');
     }
-
-    public function riwayatPengembalian()
+    
+    public function riwayatPengembalian(): View
     {
         return view('dummy.riwayat-pengembalian');
     }
-
-    public function laporanPengembalian()
+    
+    public function laporanPengembalian(): View
     {
         return view('dummy.laporan-pengembalian');
     }
 }
-
