@@ -19,6 +19,7 @@ class MasterBarang extends Model
         'tahun_barang',
         'deskripsi_barang',
         'kategori_barang_id',
+        'status_barang',
         'created_by',
         'updated_by',
     ];
@@ -29,6 +30,11 @@ class MasterBarang extends Model
     public function kategori()
     {
         return $this->belongsTo(KategoriBarang::class, 'kategori_barang_id');
+    }
+
+    public function detailPermohonans()
+    {
+        return $this->hasMany(DetailPermohonan::class, 'barang_id');
     }
 
     /**

@@ -2,21 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetailPermohonan extends Model
 {
-    protected $table = 'detail_permohonan';
-    protected $guarded = [];
+    use HasFactory;
 
-    public function permohonan(): BelongsTo
+    protected $table = 'detail_permohonan';
+
+    protected $fillable = [
+        'permohonan_id',
+        'barang_id',
+        'volume',
+        'satuan',
+        'harga',
+        'jumlah',
+        'kode_ma',
+        'keterangan',
+    ];
+
+    public function permohonan()
     {
         return $this->belongsTo(Permohonan::class, 'permohonan_id');
     }
 
-    public function barang(): BelongsTo
+    public function barang()
     {
         return $this->belongsTo(MasterBarang::class, 'barang_id');
     }
 }
+

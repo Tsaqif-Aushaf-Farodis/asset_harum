@@ -2,9 +2,6 @@
     style="z-index: 500;">
     <div class="container-xxl">
 
-        {{-- <div class="navbar-brand menu-text fw-bold">
-            <span>Sistem Pendaftaran Tryout </span>
-        </div> --}}
 
         <!--  Brand demo (display only for navbar-full and hide on below xl) -->
         <div class="py-0 navbar-brand app-brand demo d-none d-xl-flex me-4 d-xl-none">

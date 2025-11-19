@@ -37,9 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('master-status', MasterStatusController::class);
     Route::resource('pengadaan-barang', PengadaanBarangController::class);
     Route::resource('master-sub-lokasi', MasterSubLokasiController::class);
+    Route::resource('permohonan', \App\Http\Controllers\PermohonanController::class);
 
-    Route::get('/form-permohonan', [DummyController::class, 'formPermohonan'])->name('form-permohonan');
-    Route::get('/riwayat-permohonan', [DummyController::class, 'riwayatPermohonan'])->name('dummy.riwayat-permohonan');
 
     Route::get('/generate-opname', [DummyController::class, 'generateOpname'])->name('dummy.generate-opname');
     Route::get('/opname', [DummyController::class, 'opname'])->name('dummy.opname');

@@ -14,7 +14,7 @@ $nav = [
             "submenus" => [
                 [
                     'title' => 'Form Permohonan',
-                    'route' => 'form-permohonan',
+                    'route' => 'permohonan.index',
                     'permissions' => null
                 ],
                 [
@@ -54,7 +54,7 @@ $nav = [
                     'permissions' => ['pengadaan-barang view']
                 ],
                 [
-                    'title' => 'Barang Keluar',
+                    'title' => 'Hapus Barang',
                     'route' => 'pengadaan-barang.index',
                     'permissions' => ['pengadaan-barang view']
                 ],
@@ -107,18 +107,7 @@ $nav = [
                     'permissions' => null
                 ],
             ]
-        ],  
-         [
-            "title" => "Laporan",
-            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
-            "submenus" => [
-                [
-                    'title' => 'Form Pengembalian',
-                    'route' => null,
-                    'permissions' => null
-                ],
-            ]
-        ],  
+        ],         
     ],
     "Misc" => [
          [

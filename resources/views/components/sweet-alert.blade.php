@@ -24,7 +24,7 @@
                     animation: true,
                     position: 'top-right',
                     showConfirmButton: false,
-                    timer: 5000,
+                    timer: 1000,
                     timerProgressBar: true,
                     showCloseButton: true,
                     didOpen: (toast) => {
@@ -54,7 +54,7 @@
                     animation: true,
                     position: 'top-right',
                     showConfirmButton: false,
-                    timer: 5000,
+                    timer: 1000,
                     timerProgressBar: true,
                     showCloseButton: true,
                     didOpen: (toast) => {

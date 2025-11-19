@@ -4,7 +4,7 @@
         <div class="mb-4">
             <label for="lokasi_id" class="form-label">Lokasi</label>
             <x-input.select2 name="lokasi_id" id="lokasi_id"
-                class="form-control {{ $errors->has('lokasi_id') ? 'is-invalid' : '' }}" placeholder="Pilih Barang"
+                class="form-control {{ $errors->has('lokasi_id') ? 'is-invalid' : '' }}" placeholder="Pilih Lokasi"
                 :options="$lokasiList" selected="{{ old('lokasi_id', $masterSubLokasi?->lokasi_id) }}" />
             @error('lokasi_id')<small class="invalid-feedback">{{ $message }}</small>@enderror
         </div>

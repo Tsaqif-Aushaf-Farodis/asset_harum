@@ -2,15 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Permohonan extends Model
 {
-    protected $table = 'permohonan';
-    protected $guarded = [];
+    use HasFactory;
 
-    public function details(): HasMany
+    protected $table = 'permohonan';
+
+    protected $fillable = [
+        'bidang',
+        'tahun_anggaran',
+        'unit_kegiatan',
+        'keterangan',
+        'status',
+    ];
+
+    public function details()
     {
         return $this->hasMany(DetailPermohonan::class, 'permohonan_id');
     }
