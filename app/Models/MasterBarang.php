@@ -19,10 +19,29 @@ class MasterBarang extends Model
         'tahun_barang',
         'deskripsi_barang',
         'kategori_barang_id',
-        'status_barang',
+        'is_active',
+        'status_permohonan',
         'created_by',
         'updated_by',
     ];
+
+    /**
+     * Scope untuk filter barang yang sudah approved
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('status_permohonan', 'approved')
+                     ->where('is_active', true);
+    }
+
+    /**
+     * Scope untuk filter barang pending
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status_permohonan', 'pending')
+                     ->where('is_active', true);
+    }
 
     /**
      * Relasi ke tabel kategori_barang

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_inventaris')->unique();
             $table->foreignId('barang_id')->constrained('master_barang')->onDelete('cascade');
-            $table->foreignId('lokasi_id')->constrained('master_lokasi')->onDelete('cascade');
+            $table->foreignId('lokasi_id')->constrained('master_sub_lokasi')->onDelete('cascade');
             $table->string('sumber', 100);
             $table->enum('status', ['baru', 'bekas', 'hibah'])->default('baru');
             $table->foreignId('status_id')->constrained('master_status')->onDelete('cascade');

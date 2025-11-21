@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use \Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Woo\GridView\DataProviders\EloquentDataProvider;
 
 class PermohonanController extends Controller implements HasMiddleware
@@ -19,37 +21,59 @@ class PermohonanController extends Controller implements HasMiddleware
             new Middleware('permission:permohonan create', only: ['create', 'store']),
             new Middleware('permission:permohonan edit', only: ['edit', 'update']),
             new Middleware('permission:permohonan delete', only: ['destroy']),
+            new Middleware('permission:permohonan edit', only: ['approve', 'reject']),
         ];
     }
 
     public function index(Request $request): View
     {
-        $query = Permohonan::query();
+        $query = Permohonan::with(['details', 'approvedBy'])->orderBy('created_at', 'desc');
 
-        // tambahkan kolom yang mau dikecualikan di pencarian
-        $except = ['created_by', 'updated_by'];
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
 
-        $columns = collect($query->getModel()->getFillable())->filter(function ($item) use ($except) {
-            return !in_array($item, $except);
-        })->toArray();
+        // Filter berdasarkan tahun anggaran
+        if ($request->filled('tahun_anggaran')) {
+            $query->where('tahun_anggaran', $request->tahun_anggaran);
+        }
 
-        $selectedColumns = $request->get('col', $columns);
+        // Filter berdasarkan bidang
+        if ($request->filled('bidang')) {
+            $query->where('bidang', 'like', '%' . $request->bidang . '%');
+        }
 
-        if ($search = $request->get('search')) {
-            $query->where(function ($query) use ($search, $selectedColumns) {
-                foreach ($selectedColumns as $column) {
-                    $query->orWhere($column, 'like', '%' . $search . '%');
-                }
+        // Search global
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('bidang', 'like', "%$search%")
+                  ->orWhere('unit_kegiatan', 'like', "%$search%")
+                  ->orWhere('keterangan', 'like', "%$search%");
             });
         }
         
-        $permohonan = $query->paginate(10);
+        $permohonan = $query->paginate(15);
+
+        // Statistik untuk dashboard
+        $statistics = [
+            'total' => Permohonan::count(),
+            'pending' => Permohonan::where('status', 'pending')->count(),
+            'approved' => Permohonan::where('status', 'approved')->count(),
+            'rejected' => Permohonan::where('status', 'rejected')->count(),
+        ];
+
+        $tahunAnggaranList = Permohonan::select('tahun_anggaran')
+            ->distinct()
+            ->orderBy('tahun_anggaran', 'desc')
+            ->pluck('tahun_anggaran');
 
         if ($request->header('HX-Request')) {
             return view('permohonan.includes.index-table', compact('permohonan'));
         }
 
-        return view('permohonan.index', compact('permohonan', 'columns', 'selectedColumns'));
+        return view('permohonan.index', compact('permohonan', 'statistics', 'tahunAnggaranList'));
     }
 
     public function create(): View
@@ -62,27 +86,33 @@ class PermohonanController extends Controller implements HasMiddleware
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            	'bidang' => 'required|string|max:255',
-                'tahun_anggaran' => 'required|string',
-                'unit_kegiatan' => 'required|string|max:255',
-                'keterangan' => 'nullable|string|max:255',
+            'bidang' => 'required|string|max:255',
+            'tahun_anggaran' => 'required|digits:4|min:2000|max:' . (date('Y') + 5),
+            'unit_kegiatan' => 'required|string|max:255',
+            'keterangan' => 'nullable|string',
         ]);
 
+        $validatedData['status'] = 'pending';
+        $validatedData['created_by'] = Auth::id();
 
+        DB::beginTransaction();
         try {
-            Permohonan::create($validatedData);
-        } catch (\Illuminate\Database\QueryException $e) {
+            $permohonan = Permohonan::create($validatedData);
+            
+            DB::commit();
+            return redirect()->route('permohonan.index')
+                ->with('success', 'Permohonan berhasil dibuat dengan nomor: ' . $permohonan->id);
+        } catch (\Exception $e) {
+            DB::rollback();
             return redirect()->back()
                 ->withInput($request->all())
-                ->with('error', 'Terjadi kesalahan saat membuat data.');
+                ->with('error', 'Terjadi kesalahan saat membuat data: ' . $e->getMessage());
         }
-
-        return redirect()->route('permohonan.index')
-            ->with('success', 'Permohonan berhasil dibuat');
     }
 
     public function show(Permohonan $permohonan): View
     {
+        $permohonan->load(['details.barang', 'approvedBy', 'createdBy']);
         return view('permohonan.show', compact('permohonan'));
     }
 
@@ -93,29 +123,30 @@ class PermohonanController extends Controller implements HasMiddleware
 
     public function update(Request $request, Permohonan $permohonan): RedirectResponse
     {
+        // Cek apakah sudah disetujui/ditolak
+        if (in_array($permohonan->status, ['approved', 'rejected'])) {
+            return redirect()->back()
+                ->with('error', 'Permohonan yang sudah disetujui/ditolak tidak dapat diubah.');
+        }
+
         $validatedData = $request->validate([
-            	'bidang' => 'required|string|max:255',
-	'tahun_anggaran' => 'required|string',
-	'unit_kegiatan' => 'required|string|max:255',
-	'keterangan' => 'nullable|string|max:255',
-	'status' => 'required|string|max:255',
+            'bidang' => 'required|string|max:255',
+            'tahun_anggaran' => 'required|digits:4|min:2000|max:' . (date('Y') + 5),
+            'unit_kegiatan' => 'required|string|max:255',
+            'keterangan' => 'nullable|string',
         ]);
+
+        $validatedData['updated_by'] = Auth::id();
 
         try {
             $permohonan->update($validatedData);
-        } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->getCode() == '23000') {
-                return redirect()->back()
-                    ->withInput($request->all())
-                    ->with('error', 'Data permohonan ini sudah digunakan dan tidak dapat diperbarui.');
-            }
+            return redirect()->route('permohonan.index')
+                ->with('success', 'Permohonan berhasil diperbarui');
+        } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput($request->all())
-                ->with('error', 'Terjadi kesalahan saat memperbarui data.');
+                ->with('error', 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage());
         }
-
-        return redirect()->route('permohonan.index')
-            ->with('success', 'Permohonan berhasil diperbarui');
     }
 
     public function destroy(Permohonan $permohonan): RedirectResponse
@@ -133,5 +164,71 @@ class PermohonanController extends Controller implements HasMiddleware
 
         return redirect()->route('permohonan.index')
             ->with('success', 'Permohonan berhasil dihapus');
+    }
+
+    public function approve(Request $request, Permohonan $permohonan): RedirectResponse
+    {
+        $request->validate([
+            'catatan_approval' => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Update status permohonan
+            $permohonan->update([
+                'status' => 'approved',
+                'approved_by' => Auth::id(),
+                'approved_at' => now(),
+                'catatan_approval' => $request->catatan_approval,
+            ]);
+
+            // Update status_permohonan barang yang ada di detail permohonan menjadi approved
+            $permohonan->load('details');
+            foreach ($permohonan->details as $detail) {
+                if ($detail->barang_id) {
+                    \App\Models\MasterBarang::where('id', $detail->barang_id)
+                        ->update(['status_permohonan' => 'approved']);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('permohonan.index')->with('success', 'Permohonan berhasil disetujui dan barang sudah dapat digunakan untuk inventarisasi');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function reject(Request $request, Permohonan $permohonan): RedirectResponse
+    {
+        $request->validate([
+            'catatan_approval' => 'required|string',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Update status permohonan
+            $permohonan->update([
+                'status' => 'rejected',
+                'approved_by' => Auth::id(),
+                'approved_at' => now(),
+                'catatan_approval' => $request->catatan_approval,
+            ]);
+
+            // Update status_permohonan barang yang ada di detail permohonan menjadi rejected
+            $permohonan->load('details');
+            foreach ($permohonan->details as $detail) {
+                if ($detail->barang_id) {
+                    \App\Models\MasterBarang::where('id', $detail->barang_id)
+                        ->update(['status_permohonan' => 'rejected']);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('permohonan.index')->with('success', 'Permohonan ditolak');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

@@ -8,25 +8,15 @@ $nav = [
             'route' => 'master-barang.index',
             'permissions' => ['master-barang view']
         ],
-         [
+        [
             "title" => "Permohonan",
-            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
-            "submenus" => [
-                [
-                    'title' => 'Form Permohonan',
-                    'route' => 'permohonan.index',
-                    'permissions' => null
-                ],
-                [
-                    'title' => 'Riwayat Permohonan',
-                    'route' => null,
-                    'permissions' => null
-                ],
-            ]
+            "icon" => '<i class="menu-icon tf-icons bx bx-envelope"></i>',
+            "route" => "permohonan.index",
+            "permissions" => ["permohonan view"]
         ],  
         [
             "title" => "Inventaris",
-            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "icon" => '<i class="menu-icon tf-icons bx bx-cube"></i>',
             "submenus" => [
                 [
                     'title' => 'Pengadaan Barang',
@@ -48,68 +38,64 @@ $nav = [
                     'route' => 'kendaraan.index',
                     'permissions' => ['kendaraan view']
                 ],
-                [
-                    'title' => 'Mutasi',
-                    'route' => 'pengadaan-barang.index',
-                    'permissions' => ['pengadaan-barang view']
-                ],
-                [
-                    'title' => 'Non Aktif',
-                    'route' => 'pengadaan-barang.index',
-                    'permissions' => ['pengadaan-barang view']
-                ],
-                [
-                    'title' => 'Hapus Barang',
-                    'route' => 'pengadaan-barang.index',
-                    'permissions' => ['pengadaan-barang view']
-                ],
             ]
         ],     
-           [
+        [
+            "title" => "Mutasi Aset",
+            "icon" => '<i class="menu-icon tf-icons bx bx-transfer"></i>',
+            'route' => 'mutasi-aset.index',
+            'permissions' => ['mutasi-aset view']
+        ],
+        [
             "title" => "Opname",
-            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
-            "submenus" => [
-                [
-                    'title' => 'Generate Opname',
-                    'route' => null,
-                    'permissions' => null
-                ],
-                [
-                    'title' => 'Opname',
-                    'route' => null,
-                    'permissions' => null
-                ],
-            ]
+            "icon" => '<i class="menu-icon tf-icons bx bx-check-circle"></i>',
+            'route' => 'opname.index',
+            'permissions' => ['opname view']
         ],  
-         [
+        [
             "title" => "Peminjaman",
-            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "icon" => '<i class="menu-icon tf-icons bx bx-share"></i>',
             "submenus" => [
                 [
-                    'title' => 'Form Peminjaman',
-                    'route' => null,
-                    'permissions' => null
+                    'title' => 'Daftar Peminjaman',
+                    'route' => 'peminjaman.index',
+                    'permissions' => ['peminjaman view']
                 ],
                 [
                     'title' => 'Riwayat Peminjaman',
-                    'route' => null,
-                    'permissions' => null
+                    'route' => 'peminjaman.riwayat',
+                    'permissions' => ['peminjaman view']
                 ],
             ]
         ],  
         [
-            "title" => "Pengembalian",
-            "icon" => '<i class="menu-icon tf-icons bx bx-barcode"></i>',
+            "title" => "Laporan",
+            "icon" => '<i class="menu-icon tf-icons bx bx-file"></i>',
             "submenus" => [
                 [
-                    'title' => 'Form Pengembalian',
-                    'route' => null,
-                    'permissions' => null
+                    'title' => 'Laporan Inventaris',
+                    'route' => 'laporan.inventaris',
+                    'permissions' => ['laporan view']
                 ],
                 [
-                    'title' => 'Riwayat Pengembalian',
-                    'route' => null,
-                    'permissions' => null
+                    'title' => 'Laporan Mutasi',
+                    'route' => 'laporan.mutasi',
+                    'permissions' => ['laporan view']
+                ],
+                [
+                    'title' => 'Laporan Opname',
+                    'route' => 'laporan.opname',
+                    'permissions' => ['laporan view']
+                ],
+                [
+                    'title' => 'Laporan Peminjaman',
+                    'route' => 'laporan.peminjaman',
+                    'permissions' => ['laporan view']
+                ],
+                [
+                    'title' => 'Laporan Nilai Aset',
+                    'route' => 'laporan.nilai-aset',
+                    'permissions' => ['laporan view']
                 ],
             ]
         ],         

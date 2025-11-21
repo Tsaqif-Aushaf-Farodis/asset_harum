@@ -4,73 +4,138 @@
             ['label' => 'Dashboard', 'url' => url('/')],
             ['label' => 'Permohonan'],
         ]" />
-        
-        <div class="card">
-            <div class="card-header">
-                <div class="row g-3 justify-content-between align-items-center">
-                    @can('permohonan create')
-                        <div class="col-12 col-md-auto">
-                            <a href="{{ route('permohonan.create') }}" class="btn btn-primary w-100 w-md-fit">
-                                <span class="bx bx-plus me-1"></span>Tambah Data
-                            </a>
-                        </div>
-                    @endcan
-                    
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="input-group">
-                            <input 
-                                type="text" 
-                                name="search" 
-                                class="form-control"
-                                placeholder="Cari permohonan..."
-                                value="{{ old('search', request('search')) }}"
-                                hx-get="{{ route('permohonan.index') }}"
-                                hx-trigger="keyup[keyCode==13], keyup changed delay:500ms"
-                                hx-target="#permohonan-table"
-                                hx-push-url="true"
-                                hx-indicator="#search-loading"
-                                hx-include="#filter-checkboxes input:checked"
-                            >
 
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">Filter</button>
-
-                            <ul class="dropdown-menu dropdown-menu-end" id="filter-checkboxes">
-                                <li>
-                                    <div class="mx-2 form-check">
-                                        <x-input.checkbox class="form-check-input" id="checkbox-all" :checked="count($columns) == count($selectedColumns)"
-                                            :parent="true" />
-                                        <label class="form-check-label" for="checkbox-all">-- All --</label>
-                                    </div>
-                                </li>
-                                @foreach ($columns as $column)
-                                    <li>
-                                        <div class="mx-2 form-check">
-                                            <x-input.checkbox class="form-check-input" id="checkbox-{{ $column }}"
-                                                name="col[]" value="{{ $column }}" :checked="in_array($column, $selectedColumns)"
-                                                parentId="checkbox-all" />                                        
-                                            <label class="form-check-label" for="checkbox-{{ $column }}">
-                                                {{ str()->title(str()->replace('_', ' ', $column)) }}
-                                            </label>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
+        <!-- Statistik Cards -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-start border-primary border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Total Permohonan</h6>
+                                <h3 class="mb-0">{{ number_format($statistics['total']) }}</h3>
+                            </div>
+                            <div class="text-primary">
+                                <i class="bx bx-file fs-1"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body table-container">
-                <div id="search-loading" class="htmx-indicator">
-                    <div class="flex-row px-4 py-3 mx-auto mt-5 text-center card d-flex justify-content-center justify-items-center"
-                        style="width: 200px;">
-                        <div class="px-2 d-flex align-items-center">
-                            <div class="loading-spinner"></div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-start border-warning border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Pending</h6>
+                                <h3 class="mb-0">{{ number_format($statistics['pending']) }}</h3>
+                            </div>
+                            <div class="text-warning">
+                                <i class="bx bx-time fs-1"></i>
+                            </div>
                         </div>
-                        <span>Sedang mencari permohonan...</span>
                     </div>
                 </div>
-
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-start border-success border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Disetujui</h6>
+                                <h3 class="mb-0">{{ number_format($statistics['approved']) }}</h3>
+                            </div>
+                            <div class="text-success">
+                                <i class="bx bx-check-circle fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-start border-danger border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Ditolak</h6>
+                                <h3 class="mb-0">{{ number_format($statistics['rejected']) }}</h3>
+                            </div>
+                            <div class="text-danger">
+                                <i class="bx bx-x-circle fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Info Alert -->
+        <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+            <i class="bx bx-info-circle me-2"></i>
+            <strong>Informasi Alur Permohonan:</strong>
+            <ul class="mb-0 mt-2">
+                <li>Permohonan dibuat dengan status <span class="badge bg-warning">Pending</span></li>
+                <li>Setelah permohonan <span class="badge bg-success">Disetujui</span>, barang akan tersedia untuk inventarisasi/pengadaan</li>
+                <li>Jika permohonan <span class="badge bg-danger">Ditolak</span>, barang tidak dapat digunakan untuk inventarisasi</li>
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <div class="row g-3 align-items-center">
+                    @can('permohonan create')
+                        <div class="col-12 col-md-auto">
+                            <a href="{{ route('permohonan.create') }}" class="btn btn-primary">
+                                <i class="bx bx-plus me-1"></i>Tambah Permohonan
+                            </a>
+                        </div>
+                    @endcan
+                    
+                    <div class="col-12 col-md">
+                        <form method="GET" action="{{ route('permohonan.index') }}" class="row g-2">
+                            <div class="col-md-3">
+                                <select name="status" class="form-select" onchange="this.form.submit()">
+                                    <option value="">Semua Status</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Disetujui</option>
+                                    <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="tahun_anggaran" class="form-select" onchange="this.form.submit()">
+                                    <option value="">Semua Tahun</option>
+                                    @foreach($tahunAnggaranList as $tahun)
+                                        <option value="{{ $tahun }}" {{ request('tahun_anggaran') == $tahun ? 'selected' : '' }}>
+                                            {{ $tahun }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <input 
+                                        type="text" 
+                                        name="search" 
+                                        class="form-control"
+                                        placeholder="Cari bidang, unit kegiatan..."
+                                        value="{{ request('search') }}"
+                                    >
+                                    <button type="submit" class="btn btn-outline-secondary">
+                                        <i class="bx bx-search"></i>
+                                    </button>
+                                    @if(request()->hasAny(['search', 'status', 'tahun_anggaran']))
+                                        <a href="{{ route('permohonan.index') }}" class="btn btn-outline-danger">
+                                            <i class="bx bx-x"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
                 <div id="permohonan-table">
                     @include('permohonan.includes.index-table', compact('permohonan'))
                 </div>

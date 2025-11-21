@@ -6,18 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('master_barang', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('kategori_barang_id');
+            $table->enum('status_permohonan', ['pending', 'approved', 'rejected'])
+                  ->default('pending')
+                  ->after('is_active')
+                  ->comment('Status approval dari permohonan');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('master_barang', function (Blueprint $table) {
-            $table->dropColumn('is_active');
+            $table->dropColumn('status_permohonan');
         });
     }
 };
-

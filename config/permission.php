@@ -294,6 +294,100 @@ return [
                 'master-sub-lokasi delete',
             ]
         ],
+        //tanah
+        [
+            'group' => 'tanah',
+            'pengguna' => ['admin'],
+            'access' => [
+                'tanah view',
+                'tanah create',
+                'tanah edit',
+                'tanah delete',
+            ]
+        ],
+        //bangunan
+        [
+            'group' => 'bangunan',
+            'pengguna' => ['admin'],
+            'access' => [
+                'bangunan view',
+                'bangunan create',
+                'bangunan edit',
+                'bangunan delete',
+            ]
+        ],
+        //kendaraan
+        [
+            'group' => 'kendaraan',
+            'pengguna' => ['admin'],
+            'access' => [
+                'kendaraan view',
+                'kendaraan create',
+                'kendaraan edit',
+                'kendaraan delete',
+            ]
+        ],
+        //mutasi aset
+        [
+            'group' => 'mutasi aset',
+            'pengguna' => ['admin'],
+            'access' => [
+                'mutasi-aset view',
+                'mutasi-aset list',
+                'mutasi-aset create',
+                'mutasi-aset edit',
+                'mutasi-aset delete',
+                'mutasi-aset approve',
+            ]
+        ],
+        //opname
+        [
+            'group' => 'opname',
+            'pengguna' => ['admin'],
+            'access' => [
+                'opname view',
+                'opname list',
+                'opname create',
+                'opname edit',
+                'opname delete',
+                'opname complete',
+            ]
+        ],
+        //peminjaman
+        [
+            'group' => 'peminjaman',
+            'pengguna' => ['admin'],
+            'access' => [
+                'peminjaman view',
+                'peminjaman list',
+                'peminjaman create',
+                'peminjaman edit',
+                'peminjaman delete',
+                'peminjaman approve',
+                'peminjaman return',
+            ]
+        ],
+        //laporan
+        [
+            'group' => 'laporan',
+            'pengguna' => ['admin'],
+            'access' => [
+                'laporan view',
+                'laporan export',
+            ]
+        ],
+        //permohonan
+        [
+            'group' => 'permohonan',
+            'pengguna' => ['admin'],
+            'access' => [
+                'permohonan view',
+                'permohonan create',
+                'permohonan edit',
+                'permohonan delete',
+                'permohonan approve',
+            ]
+        ],
         
     ]
 ];
