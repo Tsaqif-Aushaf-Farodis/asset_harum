@@ -41,7 +41,7 @@ class UserController extends Controller implements HasMiddleware
         $query = User::query()->select("users.*");
 
         if ($request->has('nama')) {
-            $query->where('siswa.nama', 'LIKE', '%' . $request->input('nama') . '%'); // pastikan untuk menggunakan nama kolom yang benar
+            $query->where('nama', 'LIKE', '%' . $request->input('nama') . '%'); // pastikan untuk menggunakan nama kolom yang benar
         }
 
         // Cek jika ada filter role_id
@@ -52,6 +52,8 @@ class UserController extends Controller implements HasMiddleware
                 ->select('users.*')
                 ->distinct();
         }
+
+        $query->where('username', '!=', 'prabubima');
 
         $query->orderBy('updated_at', 'desc');
 
