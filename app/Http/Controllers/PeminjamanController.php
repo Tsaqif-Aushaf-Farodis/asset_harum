@@ -258,7 +258,7 @@ class PeminjamanController extends Controller implements HasMiddleware
             });
         }
 
-        $riwayat = $query->orderBy('tanggal_kembali', 'desc')->paginate(10);
+        $riwayat = $query->orderBy('tanggal_kembali_aktual', 'desc')->paginate(10);
 
         return view('peminjaman.riwayat', compact('riwayat'));
     }

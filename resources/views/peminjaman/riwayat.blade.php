@@ -52,8 +52,8 @@
                             @forelse($riwayat as $index => $item)
                             @php
                                 $lamaPinjam = '-';
-                                if($item->tanggal_pinjam && $item->tanggal_kembali) {
-                                    $diff = \Carbon\Carbon::parse($item->tanggal_pinjam)->diffInDays(\Carbon\Carbon::parse($item->tanggal_kembali));
+                                if($item->tanggal_pinjam && $item->tanggal_kembali_aktual) {
+                                    $diff = \Carbon\Carbon::parse($item->tanggal_pinjam)->diffInDays(\Carbon\Carbon::parse($item->tanggal_kembali_aktual));
                                     $lamaPinjam = $diff . ' hari';
                                 }
                             @endphp
@@ -63,7 +63,7 @@
                                 <td>{{ $item->pengadaan->nama_barang ?? '-' }}</td>
                                 <td>{{ $item->nama_peminjam }}</td>
                                 <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d/m/Y') : '-' }}</td>
-                                <td>{{ $item->tanggal_kembali ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d/m/Y') : '-' }}</td>
+                                <td>{{ $item->tanggal_kembali_aktual ? \Carbon\Carbon::parse($item->tanggal_kembali_aktual)->format('d/m/Y') : '-' }}</td>
                                 <td>{{ $lamaPinjam }}</td>
                                 <td>
                                     @if($item->status_peminjaman == 'returned')

@@ -69,10 +69,10 @@
                                 <th>Rencana Kembali</th>
                                 <td>: {{ $peminjaman->tanggal_rencana_kembali ? \Carbon\Carbon::parse($peminjaman->tanggal_rencana_kembali)->format('d/m/Y') : '-' }}</td>
                             </tr>
-                            @if($peminjaman->tanggal_kembali)
+                            @if($peminjaman->tanggal_kembali_aktual)
                             <tr>
                                 <th>Tanggal Kembali</th>
-                                <td>: {{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d/m/Y') }}</td>
+                                <td>: {{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali_aktual)->format('d/m/Y') }}</td>
                             </tr>
                             @endif
                         </table>

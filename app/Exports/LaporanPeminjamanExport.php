@@ -63,7 +63,7 @@ class LaporanPeminjamanExport implements FromCollection, WithHeadings, WithMappi
             $peminjaman->kontak_peminjam,
             $peminjaman->tanggal_pinjam ? date('d/m/Y', strtotime($peminjaman->tanggal_pinjam)) : '-',
             $peminjaman->tanggal_rencana_kembali ? date('d/m/Y', strtotime($peminjaman->tanggal_rencana_kembali)) : '-',
-            $peminjaman->tanggal_kembali ? date('d/m/Y', strtotime($peminjaman->tanggal_kembali)) : '-',
+            $peminjaman->tanggal_kembali_aktual ? date('d/m/Y', strtotime($peminjaman->tanggal_kembali_aktual)) : '-',
             $peminjaman->keperluan,
             ucfirst($peminjaman->status_peminjaman),
             $peminjaman->kondisi_kembali ?? '-',

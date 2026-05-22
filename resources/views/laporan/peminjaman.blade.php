@@ -66,7 +66,7 @@
                                 <td>{{ $item->peminjam_nama }}</td>
                                 <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d/m/Y') : '-' }}</td>
                                 <td>{{ $item->tanggal_rencana_kembali ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali)->format('d/m/Y') : '-' }}</td>
-                                <td>{{ $item->tanggal_kembali ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d/m/Y') : '-' }}</td>
+                                <td>{{ $item->tanggal_kembali_aktual ? \Carbon\Carbon::parse($item->tanggal_kembali_aktual)->format('d/m/Y') : '-' }}</td>
                                 <td>
                                     @if($item->status_peminjaman == 'pending')
                                         <span class="badge bg-warning">Pending</span>
