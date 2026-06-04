@@ -56,7 +56,7 @@
                             @foreach($opname as $index => $item)
                             <tr>
                                 <td>{{ $opname->firstItem() + $index }}</td>
-                                <td>{{ $item->kode_opname }}</td>
+                                <td>{{ $item->id }}</td>
                                 <td>{{ $item->nama_opname }}</td>
                                 <td>{{ $item->lokasi->nama_sub_lokasi ?? 'Semua Lokasi' }}</td>
                                 <td>{{ $item->tanggal_mulai ? \Carbon\Carbon::parse($item->tanggal_mulai)->format('d/m/Y') : '-' }}</td>

@@ -33,7 +33,7 @@ class LaporanController extends Controller implements HasMiddleware
 
     public function inventaris(Request $request)
     {
-        $query = PengadaanBarang::with(['lokasi', 'kategori', 'satuan']);
+        $query = PengadaanBarang::with(['lokasi', 'kategori', 'satuan', 'statusKondisi']);
 
         if ($request->has('lokasi_id')) {
             $query->where('lokasi_id', $request->lokasi_id);

@@ -24,11 +24,11 @@
                             </tr>
                             <tr>
                                 <th>Nama Barang</th>
-                                <td>: {{ $peminjaman->pengadaan->nama_barang ?? '-' }}</td>
+                                <td>: {{ $peminjaman->pengadaan->barang->nama_barang ?? '-' }}</td>
                             </tr>
                             <tr>
                                 <th>Kategori</th>
-                                <td>: {{ $peminjaman->pengadaan->kategori->nama_kategori ?? '-' }}</td>
+                                <td>: {{ $peminjaman->pengadaan->barang->kategori->nama_kategori_barang ?? '-' }}</td>
                             </tr>
                         </table>
                     </div>
@@ -37,7 +37,7 @@
                         <table class="table table-borderless">
                             <tr>
                                 <th>Nama Peminjam</th>
-                                <td>: {{ $peminjaman->peminjam_nama }}</td>
+                                <td>: {{ $peminjaman->peminjam_nama ?? '-' }}</td>
                             </tr>
                             <tr>
                                 <th>NIP</th>
@@ -49,7 +49,7 @@
                             </tr>
                             <tr>
                                 <th>Telepon</th>
-                                <td>: {{ $peminjaman->peminjam_telepon }}</td>
+                                <td>: {{ $peminjaman->peminjam_telepon ?? '-' }}</td>
                             </tr>
                         </table>
                     </div>

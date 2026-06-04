@@ -42,7 +42,7 @@
                 @forelse($sessions as $index => $session)
                 <tr>
                     <td>{{ $sessions->firstItem() + $index }}</td>
-                    <td>{{ $session->kode_opname }}</td>
+                    <td>{{ $session->id }}</td>
                     <td>{{ $session->nama_opname }}</td>
                     <td>{{ $session->lokasi->nama_sub_lokasi ?? 'Semua Lokasi' }}</td>
                     <td>{{ $session->tanggal_mulai ? \Carbon\Carbon::parse($session->tanggal_mulai)->format('d/m/Y') : '-' }}</td>

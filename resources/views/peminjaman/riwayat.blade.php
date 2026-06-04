@@ -42,7 +42,7 @@
                                 <th>Peminjam</th>
                                 <th>Tgl Pinjam</th>
                                 <th>Tgl Kembali</th>
-                                <th>Lama Pinjam</th>
+                                {{-- <th>Lama Pinjam</th> --}}
                                 <th>Status</th>
                                 <th>Kondisi Kembali</th>
                                 <th>Aksi</th>
@@ -60,11 +60,11 @@
                             <tr>
                                 <td>{{ $riwayat->firstItem() + $index }}</td>
                                 <td>{{ $item->pengadaan->kode_inventaris ?? '-' }}</td>
-                                <td>{{ $item->pengadaan->nama_barang ?? '-' }}</td>
-                                <td>{{ $item->nama_peminjam }}</td>
+                                <td>{{ $item->pengadaan->barang->nama_barang ?? '-' }}</td>
+                                <td>{{ $item->peminjam_nama ?? '-' }}</td>
                                 <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d/m/Y') : '-' }}</td>
-                                <td>{{ $item->tanggal_kembali_aktual ? \Carbon\Carbon::parse($item->tanggal_kembali_aktual)->format('d/m/Y') : '-' }}</td>
-                                <td>{{ $lamaPinjam }}</td>
+                                <td>{{ $item->tanggal_rencana_kembali ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali)->format('d/m/Y') : '-' }}</td>
+                                {{-- <td>{{ $lamaPinjam }}</td> --}}
                                 <td>
                                     @if($item->status_peminjaman == 'returned')
                                         <span class="badge bg-success">Dikembalikan</span>
@@ -77,17 +77,21 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($item->kondisi_kembali == 'Baik')
-                                        <span class="badge bg-success">{{ $item->kondisi_kembali }}</span>
-                                    @elseif($item->kondisi_kembali == 'Rusak Ringan')
-                                        <span class="badge bg-warning">{{ $item->kondisi_kembali }}</span>
-                                    @elseif($item->kondisi_kembali == 'Rusak Berat')
-                                        <span class="badge bg-danger">{{ $item->kondisi_kembali }}</span>
-                                    @elseif($item->kondisi_kembali == 'Hilang')
-                                        <span class="badge bg-dark">{{ $item->kondisi_kembali }}</span>
-                                    @else
-                                        <span class="badge bg-secondary">-</span>
-                                    @endif
+                                    @php
+                                        $kondisi = $item->kondisiKembali->nama_status ?? '-';
+
+                                        $badge = match($kondisi) {
+                                            'Baik' => 'success',
+                                            'Rusak Ringan' => 'warning',
+                                            'Rusak Berat' => 'danger',
+                                            'Hilang' => 'dark',
+                                            default => 'secondary'
+                                        };
+                                    @endphp
+
+                                    <span class="badge bg-{{ $badge }}">
+                                        {{ $kondisi }}
+                                    </span>
                                 </td>
                                 <td>
                                     <a href="{{ route('peminjaman.show', $item) }}" class="btn btn-sm btn-outline-primary">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OpnameSession;
 use App\Models\OpnameDetail;
 use App\Models\PengadaanBarang;
+use App\Models\MasterStatus;
 use App\Models\MasterSubLokasi;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -166,8 +167,9 @@ class OpnameController extends Controller implements HasMiddleware
             return redirect()->route('opname.index')->with('error', 'Hanya opname ongoing yang dapat diinput hasilnya');
         }
 
+        $statuses = MasterStatus::orderBy('nama_status')->get();
         $opname->load(['details.pengadaan']);
-        return view('opname.input-hasil', compact('opname'));
+        return view('opname.input-hasil', compact('opname', 'statuses'));
     }
 
     public function saveHasil(Request $request, OpnameSession $opname)
@@ -180,8 +182,8 @@ class OpnameController extends Controller implements HasMiddleware
             'details' => 'required|array',
             'details.*.id' => 'required|exists:opname_detail,id',
             'details.*.status_keberadaan' => 'required|in:sesuai,tidak_sesuai,hilang,rusak,baru',
-            'details.*.kondisi_sesudah' => 'nullable|string',
-            'details.*.keterangan' => 'nullable|string',
+            'details.*.kondisi_fisik' => 'nullable|string',
+            'details.*.catatan' => 'nullable|string',
         ]);
 
         DB::beginTransaction();
@@ -189,8 +191,8 @@ class OpnameController extends Controller implements HasMiddleware
             foreach ($request->details as $detail) {
                 OpnameDetail::find($detail['id'])->update([
                     'status_keberadaan' => $detail['status_keberadaan'],
-                    'kondisi_sesudah' => $detail['kondisi_sesudah'] ?? null,
-                    'keterangan' => $detail['keterangan'] ?? null,
+                    'kondisi_fisik'     => $detail['kondisi_fisik'] ?? null,
+                    'catatan'           => $detail['catatan'] ?? null,
                 ]);
             }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Peminjaman;
 use App\Models\PengadaanBarang;
 use App\Models\User;
+use App\Models\MasterStatus;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -206,11 +207,13 @@ class PeminjamanController extends Controller implements HasMiddleware
 
     public function pengembalian(Peminjaman $peminjaman)
     {
+        $statuses = MasterStatus::all();
+
         if ($peminjaman->status_peminjaman != 'borrowed') {
             return redirect()->route('peminjaman.index')->with('error', 'Hanya peminjaman yang dipinjam yang dapat dikembalikan');
         }
 
-        return view('peminjaman.pengembalian', compact('peminjaman'));
+        return view('peminjaman.pengembalian', compact('peminjaman', 'statuses'));
     }
 
     public function storePengembalian(Request $request, Peminjaman $peminjaman)
@@ -221,17 +224,24 @@ class PeminjamanController extends Controller implements HasMiddleware
 
         $request->validate([
             'tanggal_kembali' => 'required|date',
-            'kondisi_kembali' => 'required|string',
+            'kondisi_kembali' => 'required|exists:master_status,id',
             'keterangan_pengembalian' => 'nullable|string',
         ]);
 
         DB::beginTransaction();
         try {
+            // $peminjaman->update([
+            //     'status_peminjaman' => 'returned',
+            //     'tanggal_kembali' => $request->tanggal_kembali,
+            //     'kondisi_kembali' => $request->kondisi_kembali,
+            //     'keterangan_pengembalian' => $request->keterangan_pengembalian,
+            // ]);
+
             $peminjaman->update([
-                'status_peminjaman' => 'returned',
-                'tanggal_kembali' => $request->tanggal_kembali,
-                'kondisi_kembali' => $request->kondisi_kembali,
-                'keterangan_pengembalian' => $request->keterangan_pengembalian,
+                'status_peminjaman'      => 'returned',
+                'tanggal_kembali_aktual' => $request->tanggal_kembali,
+                'kondisi_kembali_id'     => $request->kondisi_kembali,
+                'catatan'                => $request->keterangan_pengembalian,
             ]);
 
             // Update pengadaan_barang
@@ -247,7 +257,7 @@ class PeminjamanController extends Controller implements HasMiddleware
 
     public function riwayat(Request $request)
     {
-        $query = Peminjaman::with(['pengadaan', 'peminjam', 'approvedBy'])
+        $query = Peminjaman::with(['pengadaan', 'peminjam', 'approvedBy', 'kondisiKembali'])
                           ->whereIn('status_peminjaman', ['returned', 'overdue', 'lost']);
 
         if ($request->has('search')) {

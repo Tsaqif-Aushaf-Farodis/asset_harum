@@ -57,7 +57,7 @@
                                 <th>Kategori</th>
                                 <th>Lokasi</th>
                                 <th>Jumlah</th>
-                                <th>Satuan</th>
+                                {{-- <th>Satuan</th> --}}
                                 <th>Harga Satuan</th>
                                 <th>Total Nilai</th>
                                 <th>Kondisi</th>
@@ -73,10 +73,10 @@
                                 <td>{{ $item->barang->kategori->nama_kategori_barang ?? '-' }}</td>
                                 <td>{{ $item->lokasi->nama_sub_lokasi ?? '-' }}</td>
                                 <td>{{ $item->jumlah ?? 1 }}</td>
-                                <td>{{ $item->satuan->nama_satuan ?? '-' }}</td>
+                                {{-- <td>{{ $item->satuan->nama_satuan ?? '-' }}</td> --}}
                                 <td>Rp {{ number_format($item->harga_satuan ?? 0, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format(($item->jumlah ?? 1) * ($item->harga_satuan ?? 0), 0, ',', '.') }}</td>
-                                <td>{{ $item->kondisi ?? '-' }}</td>
+                                <td>{{ $item->statusKondisi->nama_status ?? '-' }}</td>
                                 <td>
                                     @if($item->is_active)
                                         <span class="badge bg-success">Aktif</span>

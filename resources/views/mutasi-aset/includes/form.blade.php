@@ -5,7 +5,7 @@
             <option value="">Pilih Aset</option>
             @foreach($pengadaanBarang as $barang)
                 <option value="{{ $barang->id }}" {{ old('pengadaan_barang_id', $mutasiAset->pengadaan_barang_id ?? '') == $barang->id ? 'selected' : '' }}>
-                    {{ $barang->kode_inventaris }} - {{ $barang->nama_barang }}
+                    {{ $barang->kode_inventaris }} ({{ $barang->barang->nama_barang }})
                 </option>
             @endforeach
         </select>
