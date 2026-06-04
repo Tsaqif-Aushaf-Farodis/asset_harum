@@ -26,7 +26,7 @@
                                     <th>Kondisi Sebelum</th>
                                     <th>Status Keberadaan</th>
                                     <th>Kondisi Sesudah</th>
-                                    <th>Keterangan</th>
+                                    <th>Catatan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,7 +35,7 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $detail->pengadaan->kode_inventaris ?? '-' }}</td>
                                     <td>{{ $detail->pengadaan->barang->nama_barang ?? '-' }}</td>
-                                    <td>{{ $detail->kondisi_sebelum ?? '-' }}</td>
+                                    <td>{{ $detail->kondisi_sistem ?? '-' }}</td>
                                     <td>
                                         <input type="hidden" name="details[{{ $index }}][id]" value="{{ $detail->id }}">
                                         <select name="details[{{ $index }}][status_keberadaan]" class="form-select form-select-sm" required>
@@ -48,16 +48,23 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" name="details[{{ $index }}][kondisi_sesudah]" 
-                                               class="form-control form-control-sm" 
-                                               value="{{ $detail->kondisi_sesudah ?? '' }}" 
-                                               placeholder="Kondisi saat ini">
+                                        <select name="details[{{ $index }}][kondisi_fisik]"
+                                                class="form-select form-select-sm">
+                                            <option value="">Pilih Kondisi</option>
+
+                                            @foreach($statuses as $status)
+                                                <option value="{{ $status->nama_status }}"
+                                                    {{ ($detail->kondisi_fisik ?? '') == $status->nama_status ? 'selected' : '' }}>
+                                                    {{ $status->nama_status }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </td>
                                     <td>
-                                        <input type="text" name="details[{{ $index }}][keterangan]" 
+                                        <input type="text" name="details[{{ $index }}][catatan]" 
                                                class="form-control form-control-sm" 
-                                               value="{{ $detail->keterangan ?? '' }}" 
-                                               placeholder="Keterangan">
+                                               value="{{ $detail->catatan ?? '' }}" 
+                                               placeholder="Catatan">
                                     </td>
                                 </tr>
                                 @endforeach

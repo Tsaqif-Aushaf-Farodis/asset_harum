@@ -80,7 +80,24 @@
                                         <span class="badge bg-secondary">{{ ucfirst($item->status_peminjaman) }}</span>
                                     @endif
                                 </td>
-                                <td>{{ $item->kondisi_kembali ?? '-' }}</td>
+                                {{-- <td>{{ $item->kondisi_kembali ?? '-' }}</td> --}}
+                                <td>
+                                    @php
+                                        $kondisi = $item->kondisiKembali->nama_status ?? '-';
+
+                                        $badge = match($kondisi) {
+                                            'Baik' => 'success',
+                                            'Rusak Ringan' => 'warning',
+                                            'Rusak Berat' => 'danger',
+                                            'Hilang' => 'dark',
+                                            default => 'secondary'
+                                        };
+                                    @endphp
+
+                                    <span class="badge bg-{{ $badge }}">
+                                        {{ $kondisi }}
+                                    </span>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

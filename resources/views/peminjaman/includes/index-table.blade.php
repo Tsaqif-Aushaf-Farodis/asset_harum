@@ -45,7 +45,7 @@
                     <td>{{ $peminjaman->firstItem() + $index }}</td>
                     <td>{{ $item->pengadaan->kode_inventaris ?? '-' }}</td>
                     <td>{{ $item->pengadaan->barang->nama_barang ?? '-' }}</td>
-                    <td>{{ $item->nama_peminjam }}</td>
+                    <td>{{ $item->peminjam_nama ?? '-' }}</td>
                     <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d/m/Y') : '-' }}</td>
                     <td>{{ $item->tanggal_rencana_kembali ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali)->format('d/m/Y') : '-' }}</td>
                     <td>

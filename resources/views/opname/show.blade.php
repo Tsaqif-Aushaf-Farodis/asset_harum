@@ -19,7 +19,7 @@
                         <table class="table table-borderless">
                             <tr>
                                 <th width="200">Kode Opname</th>
-                                <td>: {{ $opname->kode_opname }}</td>
+                                <td>: {{ $opname->id }}</td>
                             </tr>
                             <tr>
                                 <th>Nama Opname</th>
@@ -120,7 +120,7 @@
                                 <th>Kondisi Sebelum</th>
                                 <th>Status Keberadaan</th>
                                 <th>Kondisi Sesudah</th>
-                                <th>Keterangan</th>
+                                <th>Catatan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -129,7 +129,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $detail->pengadaan->kode_inventaris ?? '-' }}</td>
                                 <td>{{ $detail->pengadaan->barang->nama_barang ?? '-' }}</td>
-                                <td>{{ $detail->kondisi_sebelum ?? '-' }}</td>
+                                <td>{{ $detail->kondisi_sistem ?? '-' }}</td>
                                 <td>
                                     @if($detail->status_keberadaan == 'sesuai')
                                         <span class="badge bg-success">Sesuai</span>
@@ -145,8 +145,8 @@
                                         <span class="badge bg-secondary">Belum Dicek</span>
                                     @endif
                                 </td>
-                                <td>{{ $detail->kondisi_sesudah ?? '-' }}</td>
-                                <td>{{ $detail->keterangan ?? '-' }}</td>
+                                <td>{{ $detail->kondisi_fisik ?? '-' }}</td>
+                                <td>{{ $detail->catatan ?? '-' }}</td>
                             </tr>
                             @endforeach
                         </tbody>

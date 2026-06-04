@@ -20,11 +20,11 @@
                             </tr>
                             <tr>
                                 <th>Nama Barang</th>
-                                <td>: {{ $peminjaman->pengadaan->nama_barang ?? '-' }}</td>
+                                <td>: {{ $peminjaman->pengadaan->barang->nama_barang ?? '-' }}</td>
                             </tr>
                             <tr>
                                 <th>Peminjam</th>
-                                <td>: {{ $peminjaman->nama_peminjam }}</td>
+                                <td>: {{ $peminjaman->peminjam_nama ?? '-' }}</td>
                             </tr>
                         </table>
                     </div>
@@ -64,10 +64,12 @@
                             <label for="kondisi_kembali" class="form-label">Kondisi Barang Saat Kembali <span class="text-danger">*</span></label>
                             <select name="kondisi_kembali" id="kondisi_kembali" class="form-select" required>
                                 <option value="">Pilih Kondisi</option>
-                                <option value="Baik" {{ old('kondisi_kembali') == 'Baik' ? 'selected' : '' }}>Baik</option>
-                                <option value="Rusak Ringan" {{ old('kondisi_kembali') == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
-                                <option value="Rusak Berat" {{ old('kondisi_kembali') == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
-                                <option value="Hilang" {{ old('kondisi_kembali') == 'Hilang' ? 'selected' : '' }}>Hilang</option>
+
+                                @foreach($statuses as $status)
+                                    <option value="{{ $status->id }}">
+                                        {{ $status->nama_status }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
 
