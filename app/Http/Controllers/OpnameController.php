@@ -21,7 +21,7 @@ class OpnameController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:opname list|opname-create|opname-edit|opname-delete', only: ['index','show']),
+            new Middleware('permission:opname list|opname create|opname edit|opname delete', only: ['index','show']),
             new Middleware('permission:opname create', only: ['create','store']),
             new Middleware('permission:opname edit', only: ['edit','update','inputHasil']),
             new Middleware('permission:opname complete', only: ['complete']),
