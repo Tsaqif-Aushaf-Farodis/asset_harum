@@ -17,11 +17,7 @@ class MutasiAsetController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-<<<<<<< HEAD
             new Middleware('permission:mutasi-aset list|mutasi-aset-create|mutasi-aset-edit|mutasi-aset-delete', only: ['index','show']),
-=======
-            new Middleware('permission:mutasi-aset list|mutasi-aset create|mutasi-aset edit|mutasi-aset delete', only: ['index','show']),
->>>>>>> f99277c1d46b239252a278774b1cce610a822fae
             new Middleware('permission:mutasi-aset create', only: ['create','store']),
             new Middleware('permission:mutasi-aset edit', only: ['edit','update']),
             new Middleware('permission:mutasi-aset delete', only: ['destroy']),
