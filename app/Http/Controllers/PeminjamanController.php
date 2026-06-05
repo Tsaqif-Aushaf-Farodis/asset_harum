@@ -17,12 +17,12 @@ class PeminjamanController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:peminjaman-list|peminjaman-create|peminjaman-edit|peminjaman-delete', only: ['index','show']),
-            new Middleware('permission:peminjaman-create', only: ['create','store']),
-            new Middleware('permission:peminjaman-edit', only: ['edit','update']),
-            new Middleware('permission:peminjaman-delete', only: ['destroy']),
-            new Middleware('permission:peminjaman-approve', only: ['approve','reject']),
-            new Middleware('permission:peminjaman-return', only: ['pengembalian','storePengembalian']),
+            new Middleware('permission:peminjaman list|peminjaman-create|peminjaman-edit|peminjaman-delete', only: ['index','show']),
+            new Middleware('permission:peminjaman create', only: ['create','store']),
+            new Middleware('permission:peminjaman edit', only: ['edit','update']),
+            new Middleware('permission:peminjaman delete', only: ['destroy']),
+            new Middleware('permission:peminjaman approve', only: ['approve','reject']),
+            new Middleware('permission:peminjaman return', only: ['pengembalian','storePengembalian']),
         ];
     }
 

@@ -21,8 +21,8 @@ class LaporanController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:laporan-view', only: ['index','inventaris','mutasi','opname','peminjaman','nilaiAset']),
-            new Middleware('permission:laporan-export', only: ['exportInventaris','exportMutasi','exportPeminjaman','exportNilaiAset']),
+            new Middleware('permission:laporan view', only: ['index','inventaris','mutasi','opname','peminjaman','nilaiAset']),
+            new Middleware('permission:laporan export', only: ['exportInventaris','exportMutasi','exportPeminjaman','exportNilaiAset']),
         ];
     }
 
