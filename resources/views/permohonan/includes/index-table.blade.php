@@ -48,30 +48,33 @@
                     </td>
                     <td><small>{{ $row->created_at->format('d/m/Y H:i') }}</small></td>
                     <td class="text-center">
-                        <div class="btn-group btn-group-sm" role="group">
+                        <div class="d-flex gap-1 justify-content-center">
                             @can('permohonan view')
                                 <a href="{{ route('permohonan.show', $row) }}"
-                                    class="btn btn-outline-info"
+                                    class="btn btn-outline-info btn-sm rounded"
+                                    style="width:32px;height:32px;padding:0;line-height:30px;"
                                     data-bs-toggle="tooltip"
                                     data-bs-title="Detail">
                                     <i class="bx bx-show"></i>
                                 </a>
                             @endcan
-                            
+
                             @if($row->status == 'pending')
                                 @can('permohonan edit')
                                     <a href="{{ route('permohonan.edit', $row) }}"
-                                        class="btn btn-outline-primary"
-                                        data-bs-toggle="tooltip" 
+                                        class="btn btn-outline-primary btn-sm rounded"
+                                        style="width:32px;height:32px;padding:0;line-height:30px;"
+                                        data-bs-toggle="tooltip"
                                         data-bs-title="Edit">
                                         <i class="bx bx-pencil"></i>
                                     </a>
-                                    
+
                                     <form action="{{ route('permohonan.approve', $row) }}"
-                                        method="POST" class="d-inline">
+                                        method="POST">
                                         @csrf
-                                        <button type="submit" 
-                                            class="btn btn-outline-success"
+                                        <button type="submit"
+                                            class="btn btn-outline-success btn-sm rounded"
+                                            style="width:32px;height:32px;padding:0;line-height:30px;"
                                             data-bs-toggle="tooltip"
                                             data-bs-title="Setujui"
                                             onclick="return confirm('Setujui permohonan ini?')">
@@ -81,14 +84,15 @@
                                 @endcan
                                 @can('permohonan delete')
                                     <form action="{{ route('permohonan.destroy', $row) }}"
-                                        method="POST" class="d-inline">
+                                        method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <x-input.confirm-button 
+                                        <x-input.confirm-button
                                             text="Data permohonan ini akan dihapus!"
-                                            positive="Ya, hapus!" 
+                                            positive="Ya, hapus!"
                                             icon="warning"
-                                            class="btn btn-outline-danger"
+                                            class="btn btn-outline-danger btn-sm rounded"
+                                            style="width:32px;height:32px;padding:0;line-height:30px;"
                                             data-bs-toggle="tooltip"
                                             data-bs-title="Hapus">
                                             <i class="bx bx-trash"></i>

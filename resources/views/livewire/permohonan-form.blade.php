@@ -63,18 +63,18 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+                    <table class="table table-hover mb-0" style="min-width: 1200px;">
                         <thead class="table-light">
                             <tr class="text-center">
-                                <th width="3%">No</th>
-                                <th width="20%">Uraian Barang <span class="text-danger">*</span></th>
-                                <th width="8%">Volume <span class="text-danger">*</span></th>
-                                <th width="10%">Satuan <span class="text-danger">*</span></th>
-                                <th width="12%">Harga Satuan <span class="text-danger">*</span></th>
-                                <th width="12%">Jumlah</th>
-                                <th width="10%">Kode MA</th>
-                                <th width="15%">Keterangan</th>
-                                <th width="5%">Aksi</th>
+                                <th style="width:50px;">No</th>
+                                <th style="min-width:260px;">Uraian Barang <span class="text-danger">*</span></th>
+                                <th style="width:100px;">Volume <span class="text-danger">*</span></th>
+                                <th style="min-width:150px;">Satuan <span class="text-danger">*</span></th>
+                                <th style="min-width:160px;">Harga Satuan <span class="text-danger">*</span></th>
+                                <th style="min-width:170px;">Jumlah</th>
+                                <th style="min-width:140px;">Kode MA</th>
+                                <th style="min-width:180px;">Keterangan</th>
+                                <th style="width:60px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,44 +82,44 @@
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>
-                                    <select class="form-select form-select-sm @error('details.'.$index.'.barang_id') is-invalid @enderror" 
+                                    <select class="form-select form-select-sm @error('details.'.$index.'.barang_id') is-invalid @enderror"
                                         wire:model="details.{{ $index }}.barang_id">
                                         <option value="">Pilih Barang</option>
                                         @foreach($barangOptions as $barang)
                                             <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                                         @endforeach
                                     </select>
-                                    @error('details.'.$index.'.barang_id') 
-                                        <small class="text-danger">{{ $message }}</small> 
+                                    @error('details.'.$index.'.barang_id')
+                                        <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </td>
                                 <td>
                                     <input type="number" step="0.01" min="0"
-                                        wire:model="details.{{ $index }}.volume"
+                                        wire:model.live="details.{{ $index }}.volume"
                                         class="form-control form-control-sm text-center @error('details.'.$index.'.volume') is-invalid @enderror" />
-                                    @error('details.'.$index.'.volume') 
-                                        <small class="text-danger">{{ $message }}</small> 
+                                    @error('details.'.$index.'.volume')
+                                        <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </td>
                                 <td>
-                                    <select class="form-select form-select-sm @error('details.'.$index.'.satuan') is-invalid @enderror" 
+                                    <select class="form-select form-select-sm @error('details.'.$index.'.satuan') is-invalid @enderror"
                                         wire:model="details.{{ $index }}.satuan">
                                         <option value="">Pilih</option>
                                         @foreach($satuanOptions as $satuan)
                                             <option value="{{ $satuan->kode_satuan }}">{{ $satuan->nama_satuan }}</option>
                                         @endforeach
                                     </select>
-                                    @error('details.'.$index.'.satuan') 
-                                        <small class="text-danger">{{ $message }}</small> 
+                                    @error('details.'.$index.'.satuan')
+                                        <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </td>
                                 <td>
                                     <input type="number" step="0.01" min="0"
-                                        wire:model="details.{{ $index }}.harga"
-                                        class="form-control form-control-sm text-end @error('details.'.$index.'.harga') is-invalid @enderror" 
+                                        wire:model.live="details.{{ $index }}.harga"
+                                        class="form-control form-control-sm text-end @error('details.'.$index.'.harga') is-invalid @enderror"
                                         placeholder="0" />
-                                    @error('details.'.$index.'.harga') 
-                                        <small class="text-danger">{{ $message }}</small> 
+                                    @error('details.'.$index.'.harga')
+                                        <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </td>
                                 <td>
