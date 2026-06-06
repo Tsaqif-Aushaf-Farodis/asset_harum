@@ -40,6 +40,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('master-satuan', MasterSatuanController::class);
     Route::resource('master-barang', MasterBarangController::class);
     Route::resource('master-status', MasterStatusController::class);
+    // Import Pengadaan Barang (harus didefinisikan sebelum resource agar tidak tertangkap wildcard {pengadaan_barang})
+    Route::get('pengadaan-barang/import', [PengadaanBarangController::class, 'importForm'])->name('pengadaan-barang.import');
+    Route::get('pengadaan-barang/import/sub-lokasi', [PengadaanBarangController::class, 'getSubLokasi'])->name('pengadaan-barang.import.sublokasi');
+    Route::get('pengadaan-barang/import/template', [PengadaanBarangController::class, 'downloadTemplate'])->name('pengadaan-barang.import.template');
+    Route::post('pengadaan-barang/import/preview', [PengadaanBarangController::class, 'previewImport'])->name('pengadaan-barang.import.preview');
+    Route::post('pengadaan-barang/import/store', [PengadaanBarangController::class, 'storeImport'])->name('pengadaan-barang.import.store');
+
     Route::resource('pengadaan-barang', PengadaanBarangController::class);
     Route::resource('master-sub-lokasi', MasterSubLokasiController::class);
     

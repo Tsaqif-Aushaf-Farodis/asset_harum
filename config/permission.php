@@ -281,8 +281,9 @@ return [
                 'pengadaan-barang create',
                 'pengadaan-barang edit',
                 'pengadaan-barang delete',
+                'pengadaan-barang import',
             ]
-        ],  
+        ],
         //master sub lokasi
         [
             'group' => 'master sub lokasi',

@@ -79,6 +79,14 @@
                             </a>
                         </div>
                     @endcan
+
+                    @can('pengadaan-barang import')
+                        <div class="col-auto">
+                            <a href="{{ route('pengadaan-barang.import') }}" class="btn btn-outline-primary">
+                                <i class="bx bx-import me-1"></i>Import
+                            </a>
+                        </div>
+                    @endcan
                     
                     <div class="col">
                         <form method="GET" action="{{ route('pengadaan-barang.index') }}" class="row g-2">
