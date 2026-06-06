@@ -201,7 +201,17 @@ class PengadaanBarangController extends Controller implements HasMiddleware
 
     public function edit(PengadaanBarang $pengadaanBarang): View
     {
-        return view('pengadaan-barang.edit', compact('pengadaanBarang'));
+        $barangList = MasterBarang::approved()
+            ->pluck('nama_barang', 'id')
+            ->toArray();
+        $lokasiList = MasterSubLokasi::with('lokasi')->get()->mapWithKeys(function ($item) {
+            $label = $item->lokasi->nama_lokasi . ' - ' . $item->nama_sub_lokasi;
+            return [$item->id => $label];
+        })->toArray();
+        $statusList = MasterStatus::pluck('nama_status', 'id')->toArray();
+        $satuanList = MasterSatuan::pluck('nama_satuan', 'id')->toArray();
+
+        return view('pengadaan-barang.edit', compact('pengadaanBarang', 'barangList', 'lokasiList', 'statusList', 'satuanList'));
     }
 
     public function update(Request $request, PengadaanBarang $pengadaanBarang): RedirectResponse
