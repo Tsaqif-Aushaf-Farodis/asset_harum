@@ -87,10 +87,19 @@
                             </a>
                         </div>
                     @endcan
-                    
+
+                    @can('pengadaan-barang view')
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#qrSelectModal">
+                                <i class="bx bx-qr-scan me-1"></i>Download QR Code
+                            </button>
+                        </div>
+                    @endcan
+
                     <div class="col">
                         <form method="GET" action="{{ route('pengadaan-barang.index') }}" class="row g-2">
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <select name="lokasi_id" class="form-select form-select-sm" onchange="this.form.submit()">
                                     <option value="">Semua Lokasi</option>
                                     @foreach($lokasiList as $lokasi)
@@ -100,7 +109,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            {{-- <div class="col-md-2">
                                 <select name="kategori_id" class="form-select form-select-sm" onchange="this.form.submit()">
                                     <option value="">Semua Kategori</option>
                                     @foreach($kategoriList as $kategori)
@@ -109,8 +118,8 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div>
-                            <div class="col-md-2">
+                            </div> --}}
+                            <div class="col-md-3">
                                 <select name="status_id" class="form-select form-select-sm" onchange="this.form.submit()">
                                     <option value="">Semua Status</option>
                                     @foreach($statusList as $status)
@@ -120,7 +129,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <select name="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
                                     <option value="">Semua Tahun</option>
                                     @foreach($tahunList as $tahun)
@@ -130,7 +139,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="input-group input-group-sm">
                                     <input 
                                         type="text" 
@@ -159,5 +168,9 @@
                 </div>
             </div>
         </div>
+
+        @can('pengadaan-barang view')
+            @include('pengadaan-barang.includes.qr-select-modal', compact('allPengadaanBarangForQr'))
+        @endcan
     </div>
 </x-layout.app>

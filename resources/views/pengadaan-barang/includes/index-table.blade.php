@@ -39,6 +39,13 @@
                     <div class="btn-group" role="group">
                         @can('pengadaan-barang view')
                         <div class="me-1">
+                            <a href="{{ route('pengadaan-barang.qr-code.download', $row) }}" target="_blank"
+                                class="btn btn-icon btn-outline-secondary btn-sm" data-bs-toggle="tooltip"
+                                data-bs-title="Preview QR Code" data-bs-placement="top">
+                                <span class="bx bx-qr-scan"></span>
+                            </a>
+                        </div>
+                        <div class="me-1">
                             <a href="{{ route('pengadaan-barang.show', $row) }}"
                                 class="btn btn-icon btn-outline-info btn-sm" data-bs-toggle="tooltip"
                                 data-bs-title="Detail" data-bs-placement="top">

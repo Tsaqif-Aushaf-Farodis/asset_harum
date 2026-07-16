@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/tanah/{tanah}/qr-code', [TanahController::class, 'generateQrCode'])->name('tanah.qr-code');
     Route::get('/bangunan/{bangunan}/qr-code', [BangunanController::class, 'generateQrCode'])->name('bangunan.qr-code');
     Route::get('/kendaraan/{kendaraan}/qr-code', [KendaraanController::class, 'generateQrCode'])->name('kendaraan.qr-code');
+    Route::get('/pengadaan-barang/{pengadaan_barang}/qr-code/download', [PengadaanBarangController::class, 'downloadQrCode'])->name('pengadaan-barang.qr-code.download');
+    Route::post('/pengadaan-barang/qr-code/download-bulk', [PengadaanBarangController::class, 'downloadQrCodeBulk'])->name('pengadaan-barang.qr-code.download-bulk');
 
     // Mutasi Aset routes
     Route::resource('mutasi-aset', MutasiAsetController::class);

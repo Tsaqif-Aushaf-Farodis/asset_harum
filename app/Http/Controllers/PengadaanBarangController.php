@@ -25,7 +25,9 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Woo\GridView\DataProviders\EloquentDataProvider;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class PengadaanBarangController extends Controller implements HasMiddleware
 {
@@ -37,6 +39,7 @@ class PengadaanBarangController extends Controller implements HasMiddleware
             new Middleware('permission:pengadaan-barang edit', only: ['edit', 'update']),
             new Middleware('permission:pengadaan-barang delete', only: ['destroy']),
             new Middleware('permission:pengadaan-barang import', only: ['importForm', 'getSubLokasi', 'downloadTemplate', 'previewImport', 'storeImport']),
+            new Middleware('permission:pengadaan-barang view', only: ['downloadQrCode', 'downloadQrCodeBulk']),
         ];
     }
 
@@ -107,13 +110,19 @@ class PengadaanBarangController extends Controller implements HasMiddleware
             return view('pengadaan-barang.includes.index-table', compact('pengadaanBarang'));
         }
 
+        // Daftar barang untuk modal pilih-barang di fitur download QR Code (multiple)
+        $allPengadaanBarangForQr = PengadaanBarang::with('barang')
+            ->orderBy('kode_inventaris')
+            ->get(['id', 'barang_id', 'kode_inventaris']);
+
         return view('pengadaan-barang.index', compact(
-            'pengadaanBarang', 
-            'statistics', 
-            'lokasiList', 
-            'kategoriList', 
-            'statusList', 
-            'tahunList'
+            'pengadaanBarang',
+            'statistics',
+            'lokasiList',
+            'kategoriList',
+            'statusList',
+            'tahunList',
+            'allPengadaanBarangForQr'
         ));
     }
 
@@ -283,11 +292,41 @@ class PengadaanBarangController extends Controller implements HasMiddleware
         }
     }
 
-    public function generateQrCode(PengadaanBarang $pengadaanBarang): View
+    public function downloadQrCode(PengadaanBarang $pengadaanBarang)
     {
-        $qrCode = QrCode::size(200)->generate($pengadaanBarang->kode_inventaris);
+        $items = collect([$pengadaanBarang->load('barang')]);
 
-        return view('pengadaan-barang.qr-code', compact('pengadaanBarang', 'qrCode'));
+        return $this->buildQrCodePdf($items)->stream('qr-code-' . $pengadaanBarang->kode_inventaris . '.pdf');
+    }
+
+    public function downloadQrCodeBulk(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'exists:pengadaan_barang,id',
+        ]);
+
+        $items = PengadaanBarang::with('barang')->whereIn('id', $request->ids)->get();
+
+        return $this->buildQrCodePdf($items)->stream('qr-code-pengadaan-barang-' . now()->format('Ymd-His') . '.pdf');
+    }
+
+    private function buildQrCodePdf($items)
+    {
+        $logoPath = public_path('images/logo_da_old.png');
+        $logoDataUri = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+
+        foreach ($items as $item) {
+            $item->qr_data_uri = Builder::create()
+                ->writer(new PngWriter())
+                ->data($item->kode_inventaris)
+                ->size(300)
+                ->margin(10)
+                ->build()
+                ->getDataUri();
+        }
+
+        return Pdf::loadView('pengadaan-barang.qr-code-pdf', compact('items', 'logoDataUri'))->setPaper('a4');
     }
 
     // ==================== IMPORT ====================
