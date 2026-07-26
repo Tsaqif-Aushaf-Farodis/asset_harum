@@ -46,11 +46,13 @@ class PengadaanBarangController extends Controller implements HasMiddleware
     public function index(Request $request): View
     {
         $query = PengadaanBarang::with(['barang', 'lokasi', 'kategori', 'satuan', 'statusKondisi', 'createdBy'])
-            ->orderBy('created_at', 'desc');
+            ->join('master_barang', 'master_barang.id', '=', 'pengadaan_barang.barang_id')
+            ->select('pengadaan_barang.*')
+            ->orderBy('master_barang.nama_barang');
 
         // Filter berdasarkan lokasi
         if ($request->filled('lokasi_id')) {
-            $query->where('lokasi_id', $request->lokasi_id);
+            $query->where('pengadaan_barang.lokasi_id', $request->lokasi_id);
         }
 
         // Filter berdasarkan kategori (via relasi barang)
@@ -62,25 +64,25 @@ class PengadaanBarangController extends Controller implements HasMiddleware
 
         // Filter berdasarkan status kondisi
         if ($request->filled('status_id')) {
-            $query->where('status_id', $request->status_id);
+            $query->where('pengadaan_barang.status_id', $request->status_id);
         }
 
         // Filter berdasarkan status aktif
         if ($request->filled('is_active')) {
-            $query->where('is_active', $request->is_active);
+            $query->where('pengadaan_barang.is_active', $request->is_active);
         }
 
         // Filter berdasarkan tahun perolehan
         if ($request->filled('tahun')) {
-            $query->whereYear('tanggal_pengadaan', $request->tahun);
+            $query->whereYear('pengadaan_barang.tanggal_pengadaan', $request->tahun);
         }
 
         // Search global
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('kode_inventaris', 'like', "%$search%")
-                  ->orWhere('keterangan', 'like', "%$search%")
+                $q->where('pengadaan_barang.kode_inventaris', 'like', "%$search%")
+                  ->orWhere('pengadaan_barang.keterangan', 'like', "%$search%")
                   ->orWhereHas('barang', function($sq) use ($search) {
                       $sq->where('nama_barang', 'like', "%$search%");
                   });
@@ -174,12 +176,12 @@ class PengadaanBarangController extends Controller implements HasMiddleware
                 ->whereYear('tanggal_pengadaan', $year)
                 ->count() + 1;
 
-            // Format: KODE_BARANG-KODE_KATEGORI-KODE_LOKASI-MM-YYYY-URUT
+            // Format: KODE_BARANG-KODE_KATEGORI-NAMA_SUB_LOKASI-MM-YYYY-URUT
             $kodeInventaris = sprintf(
                 '%s-%s-%s-%s-%s-%04d',
                 $barangData->kode_barang,
                 $barangData->kategori->kode_kategori_barang,
-                $lokasiData->kode_sub_lokasi,
+                $this->formatNamaSubLokasiUntukKode($lokasiData->nama_sub_lokasi),
                 $month,
                 $year,
                 $nomorUrut
@@ -486,7 +488,7 @@ class PengadaanBarangController extends Controller implements HasMiddleware
                     '%s-%s-%s-%s-%s-%04d',
                     $barang->kode_barang,
                     $barang->kategori->kode_kategori_barang,
-                    $subLokasi->kode_sub_lokasi,
+                    $this->formatNamaSubLokasiUntukKode($subLokasi->nama_sub_lokasi),
                     $month,
                     $year,
                     $counterCache[$key]
@@ -690,6 +692,15 @@ class PengadaanBarangController extends Controller implements HasMiddleware
     private function norm($value): string
     {
         return strtoupper(trim((string) $value));
+    }
+
+    /**
+     * Ubah nama sub lokasi menjadi segmen kode inventaris tanpa spasi,
+     * misal "Ruang Akuntansi" -> "RuangAkuntansi".
+     */
+    private function formatNamaSubLokasiUntukKode(string $namaSubLokasi): string
+    {
+        return Str::studly($namaSubLokasi);
     }
 
     private function parseTanggal($value): ?Carbon
