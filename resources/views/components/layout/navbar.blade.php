@@ -2,13 +2,13 @@
     <div class="app-brand demo">
         <a href="{{ route('dashboard') }}" class="app-brand-link">
             <span class="app-brand-logo demo">
-                <img src="{{ asset('images/logo_da.png') }}" alt="Darul Arqam"
+                <img src="{{ asset('images/logo.png') }}" alt="Darul Arqam"
                     style="width:42px;height:42px;object-fit:contain;">
             </span>
             <div class="app-brand-text demo menu-text ms-2" style="font-size: 18px;">
                 <span class="fw-bold" style="line-height: 110%; color:#2c1f54;">SIMADU Aset</span>
                 <br>
-                <small class="fw-semibold d-none d-sm-block" style="color:#6f6794;">Ponpes Darul Arqam Garut</small>
+                <small class="fw-semibold d-none d-sm-block" style="color:#6f6794;">LPIT Harapan Ummat</small>
             </div>
         </a>
 

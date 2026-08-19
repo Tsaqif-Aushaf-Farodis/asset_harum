@@ -496,13 +496,12 @@
                             Sistem Manajemen Terpadu
                         </span>
                         <h1 class="hero-title">
-                            Kelola Aset Pesantren dengan <span class="accent">Cerdas &amp; Terpadu</span>
+                            Kelola Aset Sekolah dengan <span class="accent">Cerdas &amp; Terpadu</span>
                         </h1>
                         <p class="hero-sub">
-                            <strong>SIMADU Modul Aset</strong> adalah Sistem Manajemen Terpadu Pondok Pesantren
-                            Darul Arqam Muhammadiyah Daerah Garut untuk pencatatan, pelacakan, dan pengawasan
-                            seluruh aset pesantren — mulai dari tanah, bangunan, kendaraan, hingga barang
-                            inventaris santri dan asatidz.
+                            <strong>SIMASET</strong> adalah Sistem Manajemen Terpadu LPIT Harapan Ummat Purbalingga
+                            untuk pencatatan, pelacakan, dan pengawasan seluruh aset pesantren — mulai dari tanah, bangunan, 
+                            kendaraan, hingga barang inventaris santri dan asatidz.
                         </p>
                         <div class="hero-cta d-flex flex-wrap gap-3">
                             <a href="{{ route('login') }}" class="btn btn-da-primary">
@@ -532,7 +531,7 @@
                     <div class="col-lg-6 d-none d-lg-block">
                         <div class="hero-visual">
                             <div class="hero-logo-wrap">
-                                <img src="{{ asset('images/logo_da.png') }}" alt="Logo Ponpes Darul Arqam Garut">
+                                <img src="{{ asset('images/logo.png') }}" alt="Logo LPIT Harapan Ummat">
                             </div>
                             <div class="hero-card c1">
                                 <div class="ic"><i class="bx bxs-building-house"></i></div>
@@ -566,9 +565,9 @@
             <div class="container">
                 <div class="mb-5 text-center">
                     <div class="section-eyebrow">Fitur Utama</div>
-                    <h2 class="section-heading">Modul Lengkap untuk Pengelolaan Aset Pesantren</h2>
+                    <h2 class="section-heading">Modul Lengkap untuk Pengelolaan Aset Sekolah</h2>
                     <p class="section-lead">
-                        Dirancang khusus untuk kebutuhan Pondok Pesantren Darul Arqam Muhammadiyah Daerah Garut
+                        Dirancang khusus untuk kebutuhan LPIT Harapan Ummat Purbalingga
                         agar pengelolaan aset menjadi tertib, akuntabel, dan mudah dipertanggungjawabkan.
                     </p>
                 </div>
@@ -646,9 +645,9 @@
                             <div class="col-lg-7">
                                 <div class="section-eyebrow" style="color: var(--da-accent-light);">Tentang
                                     Pesantren</div>
-                                <h3 style="color: white;">Pondok Pesantren Darul Arqam Muhammadiyah Daerah Garut</h3>
+                                <h3 style="color: white;">LPIT Harapan Ummat Purbalingga</h3>
                                 <p>
-                                    Pondok Pesantren Darul Arqam Muhammadiyah Daerah Garut merupakan lembaga
+                                    LPIT Harapan Ummat Purbalingga merupakan lembaga
                                     pendidikan Islam yang berkomitmen mencetak generasi qur'ani, berakhlak
                                     mulia, dan berwawasan luas. Pengelolaan aset yang amanah dan transparan
                                     adalah bagian dari ikhtiar menjaga kepercayaan umat dan keberlanjutan
@@ -665,8 +664,8 @@
                             </div>
                             <div class="col-lg-5 text-center d-none d-lg-block">
                                 <div style="display: flex; justify-content: center; align-items: center; width: 300px; height: 300px; background-color: #f5f5f5; border-radius: 50%; margin: 0 auto;">
-                                    <img src="{{ asset('images/logo_da.png') }}"
-                                        alt="Logo Ponpes Darul Arqam Garut" class="about-logo" style="width: 70%; height: auto;">
+                                    <img src="{{ asset('images/logo.png') }}"
+                                        alt="Logo LPIT Harapan Ummat" class="about-logo" style="width: 70%; height: auto;">
                                 </div>
                             </div>
                         </div>
@@ -680,7 +679,7 @@
             <div class="container">
                 <div class="cta-band">
                     <h3>Siap Mengelola Aset Pesantren Lebih Tertib?</h3>
-                    <p>Masuk ke SIMADU Modul Aset dan mulai catat, pantau, serta kelola aset pesantren
+                    <p>Masuk ke SIMASET dan mulai catat, pantau, serta kelola aset pesantren
                         dengan satu sistem yang terpadu.</p>
                     <a href="{{ route('login') }}" class="btn btn-da-primary">
                         <i class="bx bx-log-in-circle me-1"></i> Masuk ke Sistem
@@ -695,15 +694,15 @@
                 <div class="row g-4">
                     <div class="col-lg-5">
                         <div class="footer-brand d-flex gap-3 align-items-center mb-3">
-                            <img src="{{ asset('images/logo_da.png') }}" alt="Logo Darul Arqam">
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo Darul Arqam">
                             <div>
-                                <div class="text-white fw-bold" style="font-size: 1.1rem;">SIMADU Modul Aset</div>
-                                <small style="color: rgba(255,255,255,.6);">Ponpes Darul Arqam Garut</small>
+                                <div class="text-white fw-bold" style="font-size: 1.1rem;">SIMASET</div>
+                                <small style="color: rgba(255,255,255,.6);">LPIT Harapan Ummat</small>
                             </div>
                         </div>
                         <p style="color: rgba(255,255,255,.65); line-height: 1.7;">
-                            Sistem Manajemen Terpadu untuk pencatatan dan pengelolaan aset Pondok Pesantren
-                            Darul Arqam Muhammadiyah Daerah Garut secara akuntabel, transparan, dan modern.
+                            Sistem Manajemen Terpadu untuk pencatatan dan pengelolaan aset LPIT Harapan Ummat Purbalingga
+                            secara akuntabel, transparan, dan modern.
                         </p>
                     </div>
                     <div class="col-6 col-lg-3">
@@ -717,8 +716,8 @@
                         <h6>Kontak Pesantren</h6>
                         <ul class="list-unstyled d-flex flex-column gap-2"
                             style="color: rgba(255,255,255,.7); font-size: .92rem;">
-                            <li><i class="bx bx-map me-2"></i> Garut, Jawa Barat, Indonesia</li>
-                            <li><i class="bx bx-envelope me-2"></i> admin@darularqamgarut.sch.id</li>
+                            <li><i class="bx bx-map me-2"></i> Purbalingga, Jawa Tengah, Indonesia</li>
+                            <li><i class="bx bx-envelope me-2"></i> admin@lpitharapanummat.sch.id</li>
                             <li><i class="bx bx-time me-2"></i> Senin – Jumat, 08.00 – 16.00 WIB</li>
                         </ul>
                     </div>
@@ -727,7 +726,7 @@
                     <div>
                         © <script>
                             document.write(new Date().getFullYear());
-                        </script> SIMADU Modul Aset — Ponpes Darul Arqam Garut.
+                        </script> SIMASET — LPIT Harapan Ummat.
                     </div>
                     <div>
                         Dikembangkan oleh

@@ -315,7 +315,7 @@ class PengadaanBarangController extends Controller implements HasMiddleware
 
     private function buildQrCodePdf($items)
     {
-        $logoPath = public_path('images/logo_da_old.png');
+        $logoPath = public_path('images/logo.png');
         $logoDataUri = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
 
         foreach ($items as $item) {

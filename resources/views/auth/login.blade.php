@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Login — SIMADU Modul Aset | Ponpes Darul Arqam Garut</title>
+    <title>Login — SIMASET | LPIT Harapan Ummat</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -261,10 +261,10 @@
             {{-- Brand --}}
             <a href="{{ url('/') }}" class="text-decoration-none">
                 <div class="brand-row">
-                    <img src="{{ asset('images/logo_da.png') }}" alt="Logo Darul Arqam" class="brand-logo-img">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo Darul Arqam" class="brand-logo-img">
                     <div class="brand-text">
-                        <div class="name">SIMADU Modul Aset</div>
-                        <div class="sub">Ponpes Darul Arqam Garut</div>
+                        <div class="name">SIMASET</div>
+                        <div class="sub">LPIT Harapan Ummat</div>
                     </div>
                 </div>
             </a>
@@ -316,7 +316,7 @@
                 © <script>
                     document.write(new Date().getFullYear());
                 </script>
-                Ponpes Darul Arqam Garut · Dikembangkan oleh
+                LPIT Harapan Ummat · Dikembangkan oleh
                 <a href="https://prabubimatech.com" target="_blank">PrabubimaTech</a>
             </div>
         </div>

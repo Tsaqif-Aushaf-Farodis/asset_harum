@@ -5,12 +5,12 @@
     <div class="navbar-nav-right d-flex align-items-center w-100" id="navbar-collapse">
         {{-- Brand --}}
         <a href="{{ url('/') }}" class="d-flex align-items-center text-decoration-none gap-2">
-            <img src="{{ asset('images/logo_da.png') }}" alt="Logo Darul Arqam"
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Darul Arqam"
                 style="width:52px;height:52px;object-fit:contain;">
             <div class="lh-1">
-                <div class="fw-bold" style="font-size: 1.05rem; color:#2c1f54;">SIMADU Modul Aset</div>
+                <div class="fw-bold" style="font-size: 1.05rem; color:#2c1f54;">SIMASET</div>
                 <small class="fw-medium d-none d-sm-block" style="font-size: .72rem; color:#2c1f54; opacity:.7;">
-                    Ponpes Darul Arqam Garut
+                    LPIT Harapan Ummat
                 </small>
             </div>
         </a>
