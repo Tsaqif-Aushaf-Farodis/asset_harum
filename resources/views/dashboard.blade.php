@@ -4,7 +4,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h3 class="mb-1">Dashboard SIMASET</h3>
-                <p class="text-muted mb-0">Sistem Informasi Manajemen Aset - Pondok Pesantren Darul Arqam Garut</p>
+                <p class="text-muted mb-0">Sistem Informasi Manajemen Aset - LPIT Harapan Ummat</p>
             </div>
             <div class="text-end">
                 <small class="text-muted d-block">{{ now()->isoFormat('dddd, D MMMM Y') }}</small>

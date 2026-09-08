@@ -18,12 +18,12 @@ class MasterDataSeeder extends Seeder
         // Instansi
         DB::table('instansi')->insert([
             [
-                'nama_instansi' => 'Pondok Pesantren Darul Arqam Garut',
+                'nama_instansi' => 'LPIT Harapan Ummat',
                 'alamat' => 'Garut, Jawa Barat',
                 'telepon' => '0262-000000',
                 'email' => 'info@darularqamgarut.sch.id',
                 'logo' => null,
-                'deskripsi' => 'Pondok Pesantren Darul Arqam Garut dengan unit pendidikan MTs dan MA Putra-Putri',
+                'deskripsi' => 'LPIT Harapan Ummat dengan unit pendidikan MTs dan MA Putra-Putri',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],

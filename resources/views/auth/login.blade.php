@@ -271,7 +271,7 @@
 
             <h4 class="auth-title">Selamat Datang 👋</h4>
             <p class="auth-lead">
-                Silakan masuk untuk mengelola aset Pondok Pesantren Darul Arqam Garut.
+                Silakan masuk untuk mengelola aset LPIT Harapan Ummat.
             </p>
 
             <x-error-list />
