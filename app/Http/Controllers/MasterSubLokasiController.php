@@ -89,7 +89,9 @@ class MasterSubLokasiController extends Controller implements HasMiddleware
 
     public function edit(MasterSubLokasi $masterSubLokasi): View
     {
-        return view('master-sub-lokasi.edit', compact('masterSubLokasi'));
+        $lokasiList = \App\Models\MasterLokasi::all()->pluck('nama_lokasi', 'id');
+
+        return view('master-sub-lokasi.edit', compact('masterSubLokasi', 'lokasiList'));
     }
 
     public function update(Request $request, MasterSubLokasi $masterSubLokasi): RedirectResponse

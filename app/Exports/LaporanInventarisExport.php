@@ -34,7 +34,7 @@ class LaporanInventarisExport implements FromCollection, WithHeadings, WithMappi
         }
 
         if (isset($this->filters['tahun_perolehan'])) {
-            $query->whereYear('tanggal_perolehan', $this->filters['tahun_perolehan']);
+            $query->whereYear('tanggal_pengadaan', $this->filters['tahun_perolehan']);
         }
 
         return $query->orderBy('kode_inventaris')->get();
@@ -73,7 +73,7 @@ class LaporanInventarisExport implements FromCollection, WithHeadings, WithMappi
             $barang->satuan->nama_satuan ?? '-',
             $barang->harga_satuan ?? 0,
             ($barang->jumlah ?? 1) * ($barang->harga_satuan ?? 0),
-            $barang->tanggal_perolehan ? date('d/m/Y', strtotime($barang->tanggal_perolehan)) : '-',
+            $barang->tanggal_pengadaan ? date('d/m/Y', strtotime($barang->tanggal_pengadaan)) : '-',
             $barang->kondisi ?? '-',
             $barang->is_active ? 'Aktif' : 'Tidak Aktif',
         ];

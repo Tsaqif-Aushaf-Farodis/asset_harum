@@ -48,7 +48,7 @@ class LaporanController extends Controller implements HasMiddleware
         }
 
         if ($request->has('tahun_perolehan')) {
-            $query->whereYear('tanggal_perolehan', $request->tahun_perolehan);
+            $query->whereYear('tanggal_pengadaan', $request->tahun_perolehan);
         }
 
         $inventaris = $query->orderBy('kode_inventaris')->paginate(50);

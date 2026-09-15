@@ -16,7 +16,6 @@ class PengadaanBarang extends Model
         'status',
         'status_id',
         'tanggal_pengadaan',
-        'tanggal_perolehan',
         'jumlah',
         'satuan_id',
         'harga_satuan',
