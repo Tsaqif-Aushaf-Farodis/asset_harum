@@ -47,24 +47,30 @@
                 </div>
                 <div class="mb-4">
                     <label for="logo" class="form-label">Logo</label>
-                    <input 
-                        type="text" 
-                        name="logo" 
-                        class="form-control {{ $errors->has('logo') ? 'is-invalid' : '' }}" 
-                        id="logo" 
-                        value="{{ old('logo', $instansi?->logo) }}" 
-                        placeholder="Masukkan Logo" />
+                    @if ($instansi?->logo)
+                        <div class="mb-2">
+                            <img src="{{ $instansi->logo_url }}" alt="Logo" style="max-height: 100px;" class="d-block rounded border p-1">
+                        </div>
+                    @endif
+                    <input
+                        type="file"
+                        name="logo"
+                        accept="image/*"
+                        class="form-control {{ $errors->has('logo') ? 'is-invalid' : '' }}"
+                        id="logo" />
                     @error('logo')<small class="invalid-feedback">{{ $message }}</small>@enderror
+                    @if ($instansi?->logo)
+                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah logo.</small>
+                    @endif
                 </div>
                 <div class="mb-4">
                     <label for="deskripsi" class="form-label">Deskripsi</label>
-                    <input 
-                        type="text" 
-                        name="deskripsi" 
-                        class="form-control {{ $errors->has('deskripsi') ? 'is-invalid' : '' }}" 
-                        id="deskripsi" 
-                        value="{{ old('deskripsi', $instansi?->deskripsi) }}" 
-                        placeholder="Masukkan Deskripsi" />
+                    <textarea
+                        name="deskripsi"
+                        class="form-control {{ $errors->has('deskripsi') ? 'is-invalid' : '' }}"
+                        id="deskripsi"
+                        rows="4"
+                        placeholder="Masukkan Deskripsi">{{ old('deskripsi', $instansi?->deskripsi) }}</textarea>
                     @error('deskripsi')<small class="invalid-feedback">{{ $message }}</small>@enderror
                 </div>
     </div>

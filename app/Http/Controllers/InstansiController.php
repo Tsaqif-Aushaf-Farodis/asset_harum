@@ -6,6 +6,7 @@ use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 use \Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Woo\GridView\DataProviders\EloquentDataProvider;
@@ -66,9 +67,13 @@ class InstansiController extends Controller implements HasMiddleware
 	'alamat' => 'nullable|string|max:255',
 	'telepon' => 'nullable|string|max:255',
 	'email' => 'nullable|string|max:255',
-	'logo' => 'nullable|string|max:255',
-	'deskripsi' => 'nullable|string|max:255',
+	'logo' => 'nullable|image|max:2048',
+	'deskripsi' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $validatedData['logo'] = $request->file('logo')->store('instansi/logo', 'public');
+        }
 
         try {
             Instansi::create($validatedData);
@@ -99,9 +104,18 @@ class InstansiController extends Controller implements HasMiddleware
 	'alamat' => 'nullable|string|max:255',
 	'telepon' => 'nullable|string|max:255',
 	'email' => 'nullable|string|max:255',
-	'logo' => 'nullable|string|max:255',
-	'deskripsi' => 'nullable|string|max:255',
+	'logo' => 'nullable|image|max:2048',
+	'deskripsi' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('logo')) {
+            if ($instansi->logo) {
+                Storage::disk('public')->delete($instansi->logo);
+            }
+            $validatedData['logo'] = $request->file('logo')->store('instansi/logo', 'public');
+        } else {
+            unset($validatedData['logo']);
+        }
 
         try {
             $instansi->update($validatedData);
@@ -123,6 +137,9 @@ class InstansiController extends Controller implements HasMiddleware
     public function destroy(Instansi $instansi): RedirectResponse
     {
         try {
+            if ($instansi->logo) {
+                Storage::disk('public')->delete($instansi->logo);
+            }
             $instansi->delete();
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() == '23000') {

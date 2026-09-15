@@ -65,7 +65,11 @@
                                 <div class="col-md-4">
                                     <label for="first-name-horizontal">Logo</label>
                                 </div>
-                                <div class="col-md-8 form-group">: {{ $instansi->logo }}</div>
+                                <div class="col-md-8 form-group">
+                                    : @if ($instansi->logo)
+                                        <img src="{{ $instansi->logo_url }}" alt="Logo" style="max-height: 100px;" class="d-block rounded border p-1 mt-1">
+                                    @endif
+                                </div>
                                 <div class="col-md-4">
                                     <label for="first-name-horizontal">Deskripsi</label>
                                 </div>

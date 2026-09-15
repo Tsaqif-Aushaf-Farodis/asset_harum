@@ -22,8 +22,12 @@
                     <td>{{ $row?->alamat }}</td>
                     <td>{{ $row?->telepon }}</td>
                     <td>{{ $row?->email }}</td>
-                    <td>{{ $row?->logo }}</td>
-                    <td>{{ $row?->deskripsi }}</td>
+                    <td>
+                        @if ($row?->logo)
+                            <img src="{{ $row->logo_url }}" alt="Logo" style="max-height: 40px;" class="rounded border p-1">
+                        @endif
+                    </td>
+                    <td>{{ Str::limit($row?->deskripsi, 100) }}</td>
                     <td class="text-center">
                         <div class="btn-group" role="group">
                             @can('instansi view')
