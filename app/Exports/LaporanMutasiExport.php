@@ -21,15 +21,15 @@ class LaporanMutasiExport implements FromCollection, WithHeadings, WithMapping, 
     {
         $query = MutasiAset::with(['pengadaan', 'lokasiAsal', 'lokasiTujuan', 'createdBy', 'approvedBy']);
 
-        if (isset($this->filters['jenis_mutasi'])) {
+        if (!empty($this->filters['jenis_mutasi'])) {
             $query->where('jenis_mutasi', $this->filters['jenis_mutasi']);
         }
 
-        if (isset($this->filters['status'])) {
+        if (!empty($this->filters['status'])) {
             $query->where('status', $this->filters['status']);
         }
 
-        if (isset($this->filters['tanggal_mulai']) && isset($this->filters['tanggal_akhir'])) {
+        if (!empty($this->filters['tanggal_mulai']) && !empty($this->filters['tanggal_akhir'])) {
             $query->whereBetween('tanggal_mutasi', [$this->filters['tanggal_mulai'], $this->filters['tanggal_akhir']]);
         }
 

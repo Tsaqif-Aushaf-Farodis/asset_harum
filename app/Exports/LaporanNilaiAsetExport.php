@@ -23,11 +23,11 @@ class LaporanNilaiAsetExport implements FromCollection, WithHeadings, WithMappin
     {
         $query = PengadaanBarang::aktif()->with(['lokasi', 'kategori']);
 
-        if (isset($this->filters['lokasi_id'])) {
+        if (!empty($this->filters['lokasi_id'])) {
             $query->where('lokasi_id', $this->filters['lokasi_id']);
         }
 
-        if (isset($this->filters['kategori_id'])) {
+        if (!empty($this->filters['kategori_id'])) {
             $query->where('kategori_id', $this->filters['kategori_id']);
         }
 

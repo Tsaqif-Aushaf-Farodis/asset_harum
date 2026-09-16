@@ -21,11 +21,11 @@ class LaporanPeminjamanExport implements FromCollection, WithHeadings, WithMappi
     {
         $query = Peminjaman::with(['pengadaan', 'peminjam', 'approvedBy']);
 
-        if (isset($this->filters['status_peminjaman'])) {
+        if (!empty($this->filters['status_peminjaman'])) {
             $query->where('status_peminjaman', $this->filters['status_peminjaman']);
         }
 
-        if (isset($this->filters['tanggal_mulai']) && isset($this->filters['tanggal_akhir'])) {
+        if (!empty($this->filters['tanggal_mulai']) && !empty($this->filters['tanggal_akhir'])) {
             $query->whereBetween('tanggal_pinjam', [$this->filters['tanggal_mulai'], $this->filters['tanggal_akhir']]);
         }
 

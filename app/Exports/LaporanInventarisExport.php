@@ -21,19 +21,19 @@ class LaporanInventarisExport implements FromCollection, WithHeadings, WithMappi
     {
         $query = PengadaanBarang::with(['lokasi', 'kategori', 'satuan']);
 
-        if (isset($this->filters['lokasi_id'])) {
+        if (!empty($this->filters['lokasi_id'])) {
             $query->where('lokasi_id', $this->filters['lokasi_id']);
         }
 
-        if (isset($this->filters['kategori_id'])) {
+        if (!empty($this->filters['kategori_id'])) {
             $query->where('kategori_id', $this->filters['kategori_id']);
         }
 
-        if (isset($this->filters['is_active'])) {
+        if (isset($this->filters['is_active']) && $this->filters['is_active'] !== '') {
             $query->where('is_active', $this->filters['is_active']);
         }
 
-        if (isset($this->filters['tahun_perolehan'])) {
+        if (!empty($this->filters['tahun_perolehan'])) {
             $query->whereYear('tanggal_pengadaan', $this->filters['tahun_perolehan']);
         }
 

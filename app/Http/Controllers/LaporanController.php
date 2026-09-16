@@ -35,19 +35,19 @@ class LaporanController extends Controller implements HasMiddleware
     {
         $query = PengadaanBarang::with(['lokasi', 'kategori', 'satuan', 'statusKondisi']);
 
-        if ($request->has('lokasi_id')) {
+        if ($request->filled('lokasi_id')) {
             $query->where('lokasi_id', $request->lokasi_id);
         }
 
-        if ($request->has('kategori_id')) {
+        if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
         }
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->has('tahun_perolehan')) {
+        if ($request->filled('tahun_perolehan')) {
             $query->whereYear('tanggal_pengadaan', $request->tahun_perolehan);
         }
 
@@ -61,15 +61,15 @@ class LaporanController extends Controller implements HasMiddleware
     {
         $query = MutasiAset::with(['pengadaan', 'lokasiAsal', 'lokasiTujuan', 'createdBy', 'approvedBy']);
 
-        if ($request->has('jenis_mutasi')) {
+        if ($request->filled('jenis_mutasi')) {
             $query->where('jenis_mutasi', $request->jenis_mutasi);
         }
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->has('tanggal_mulai') && $request->has('tanggal_akhir')) {
+        if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
             $query->whereBetween('tanggal_mutasi', [$request->tanggal_mulai, $request->tanggal_akhir]);
         }
 
@@ -82,11 +82,11 @@ class LaporanController extends Controller implements HasMiddleware
     {
         $query = OpnameSession::with(['lokasi', 'createdBy']);
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->has('tanggal_mulai') && $request->has('tanggal_akhir')) {
+        if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
             $query->whereBetween('tanggal_mulai', [$request->tanggal_mulai, $request->tanggal_akhir]);
         }
 
@@ -99,11 +99,11 @@ class LaporanController extends Controller implements HasMiddleware
     {
         $query = Peminjaman::with(['pengadaan', 'peminjam', 'approvedBy']);
 
-        if ($request->has('status_peminjaman')) {
+        if ($request->filled('status_peminjaman')) {
             $query->where('status_peminjaman', $request->status_peminjaman);
         }
 
-        if ($request->has('tanggal_mulai') && $request->has('tanggal_akhir')) {
+        if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
             $query->whereBetween('tanggal_pinjam', [$request->tanggal_mulai, $request->tanggal_akhir]);
         }
 
@@ -116,11 +116,11 @@ class LaporanController extends Controller implements HasMiddleware
     {
         $query = PengadaanBarang::aktif()->with(['lokasi', 'kategori']);
 
-        if ($request->has('lokasi_id')) {
+        if ($request->filled('lokasi_id')) {
             $query->where('lokasi_id', $request->lokasi_id);
         }
 
-        if ($request->has('kategori_id')) {
+        if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
         }
 
