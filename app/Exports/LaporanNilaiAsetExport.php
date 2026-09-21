@@ -21,14 +21,14 @@ class LaporanNilaiAsetExport implements FromCollection, WithHeadings, WithMappin
 
     public function collection()
     {
-        $query = PengadaanBarang::aktif()->with(['lokasi', 'kategori']);
+        $query = PengadaanBarang::aktif()->with(['barang.kategori', 'lokasi']);
 
         if (!empty($this->filters['lokasi_id'])) {
             $query->where('lokasi_id', $this->filters['lokasi_id']);
         }
 
         if (!empty($this->filters['kategori_id'])) {
-            $query->where('kategori_id', $this->filters['kategori_id']);
+            $query->whereHas('barang', fn ($q) => $q->where('kategori_barang_id', $this->filters['kategori_id']));
         }
 
         return $query->orderBy('kode_inventaris')->get();
@@ -56,8 +56,8 @@ class LaporanNilaiAsetExport implements FromCollection, WithHeadings, WithMappin
         return [
             $index,
             $barang->kode_inventaris,
-            $barang->nama_barang,
-            $barang->kategori->nama_kategori ?? '-',
+            $barang->barang->nama_barang ?? '-',
+            $barang->barang->kategori->nama_kategori_barang ?? '-',
             $barang->lokasi->nama_sub_lokasi ?? '-',
             $barang->jumlah ?? 1,
             $barang->harga_satuan ?? 0,

@@ -19,14 +19,14 @@ class LaporanInventarisExport implements FromCollection, WithHeadings, WithMappi
 
     public function collection()
     {
-        $query = PengadaanBarang::with(['lokasi', 'kategori', 'satuan']);
+        $query = PengadaanBarang::with(['barang.kategori', 'lokasi', 'satuan', 'statusKondisi']);
 
         if (!empty($this->filters['lokasi_id'])) {
             $query->where('lokasi_id', $this->filters['lokasi_id']);
         }
 
         if (!empty($this->filters['kategori_id'])) {
-            $query->where('kategori_id', $this->filters['kategori_id']);
+            $query->whereHas('barang', fn ($q) => $q->where('kategori_barang_id', $this->filters['kategori_id']));
         }
 
         if (isset($this->filters['is_active']) && $this->filters['is_active'] !== '') {
@@ -66,15 +66,15 @@ class LaporanInventarisExport implements FromCollection, WithHeadings, WithMappi
         return [
             $index,
             $barang->kode_inventaris,
-            $barang->nama_barang,
-            $barang->kategori->nama_kategori ?? '-',
+            $barang->barang->nama_barang ?? '-',
+            $barang->barang->kategori->nama_kategori_barang ?? '-',
             $barang->lokasi->nama_sub_lokasi ?? '-',
             $barang->jumlah ?? 1,
             $barang->satuan->nama_satuan ?? '-',
             $barang->harga_satuan ?? 0,
             ($barang->jumlah ?? 1) * ($barang->harga_satuan ?? 0),
             $barang->tanggal_pengadaan ? date('d/m/Y', strtotime($barang->tanggal_pengadaan)) : '-',
-            $barang->kondisi ?? '-',
+            $barang->statusKondisi->nama_status ?? '-',
             $barang->is_active ? 'Aktif' : 'Tidak Aktif',
         ];
     }

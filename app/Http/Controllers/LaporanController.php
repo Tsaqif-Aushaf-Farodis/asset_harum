@@ -33,18 +33,18 @@ class LaporanController extends Controller implements HasMiddleware
 
     public function inventaris(Request $request)
     {
-        $query = PengadaanBarang::with(['lokasi', 'kategori', 'satuan', 'statusKondisi']);
+        $query = PengadaanBarang::with(['barang.kategori', 'lokasi', 'satuan', 'statusKondisi']);
 
         if ($request->filled('lokasi_id')) {
             $query->where('lokasi_id', $request->lokasi_id);
         }
 
         if ($request->filled('kategori_id')) {
-            $query->where('kategori_id', $request->kategori_id);
+            $query->whereHas('barang', fn ($q) => $q->where('kategori_barang_id', $request->kategori_id));
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->is_active);
         }
 
         if ($request->filled('tahun_perolehan')) {
@@ -59,14 +59,14 @@ class LaporanController extends Controller implements HasMiddleware
 
     public function mutasi(Request $request)
     {
-        $query = MutasiAset::with(['pengadaan', 'lokasiAsal', 'lokasiTujuan', 'createdBy', 'approvedBy']);
+        $query = MutasiAset::with(['pengadaan.barang', 'lokasiAsal', 'lokasiTujuan', 'createdBy', 'approvedBy']);
 
         if ($request->filled('jenis_mutasi')) {
             $query->where('jenis_mutasi', $request->jenis_mutasi);
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->where('status_mutasi', $request->status);
         }
 
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
@@ -97,7 +97,7 @@ class LaporanController extends Controller implements HasMiddleware
 
     public function peminjaman(Request $request)
     {
-        $query = Peminjaman::with(['pengadaan', 'peminjam', 'approvedBy']);
+        $query = Peminjaman::with(['pengadaan.barang', 'peminjam', 'kondisiKembali', 'approvedBy']);
 
         if ($request->filled('status_peminjaman')) {
             $query->where('status_peminjaman', $request->status_peminjaman);
@@ -114,14 +114,14 @@ class LaporanController extends Controller implements HasMiddleware
 
     public function nilaiAset(Request $request)
     {
-        $query = PengadaanBarang::aktif()->with(['lokasi', 'kategori']);
+        $query = PengadaanBarang::aktif()->with(['barang.kategori', 'lokasi']);
 
         if ($request->filled('lokasi_id')) {
             $query->where('lokasi_id', $request->lokasi_id);
         }
 
         if ($request->filled('kategori_id')) {
-            $query->where('kategori_id', $request->kategori_id);
+            $query->whereHas('barang', fn ($q) => $q->where('kategori_barang_id', $request->kategori_id));
         }
 
         $inventaris = $query->orderBy('kode_inventaris')->get();
@@ -129,7 +129,7 @@ class LaporanController extends Controller implements HasMiddleware
         $summary = [
             'total_aset' => $inventaris->count(),
             'total_nilai' => $inventaris->sum('harga_satuan'),
-            'per_kategori' => $inventaris->groupBy('kategori.nama_kategori')->map(function($items) {
+            'per_kategori' => $inventaris->groupBy('barang.kategori.nama_kategori_barang')->map(function($items) {
                 return [
                     'jumlah' => $items->count(),
                     'nilai' => $items->sum('harga_satuan'),

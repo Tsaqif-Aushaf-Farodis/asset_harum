@@ -84,9 +84,9 @@
                                 </td>
                                 <td>{{ Str::limit($item->alasan, 50) }}</td>
                                 <td>
-                                    @if($item->status == 'approved')
+                                    @if($item->status_mutasi == 'approved')
                                         <span class="badge bg-success">Approved</span>
-                                    @elseif($item->status == 'rejected')
+                                    @elseif($item->status_mutasi == 'rejected')
                                         <span class="badge bg-danger">Rejected</span>
                                     @else
                                         <span class="badge bg-warning">Pending</span>

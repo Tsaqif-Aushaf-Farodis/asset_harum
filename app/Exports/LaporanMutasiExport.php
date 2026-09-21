@@ -19,14 +19,14 @@ class LaporanMutasiExport implements FromCollection, WithHeadings, WithMapping, 
 
     public function collection()
     {
-        $query = MutasiAset::with(['pengadaan', 'lokasiAsal', 'lokasiTujuan', 'createdBy', 'approvedBy']);
+        $query = MutasiAset::with(['pengadaan.barang', 'lokasiAsal', 'lokasiTujuan', 'createdBy', 'approvedBy']);
 
         if (!empty($this->filters['jenis_mutasi'])) {
             $query->where('jenis_mutasi', $this->filters['jenis_mutasi']);
         }
 
         if (!empty($this->filters['status'])) {
-            $query->where('status', $this->filters['status']);
+            $query->where('status_mutasi', $this->filters['status']);
         }
 
         if (!empty($this->filters['tanggal_mulai']) && !empty($this->filters['tanggal_akhir'])) {
@@ -64,14 +64,14 @@ class LaporanMutasiExport implements FromCollection, WithHeadings, WithMapping, 
             $index,
             $mutasi->tanggal_mutasi ? date('d/m/Y', strtotime($mutasi->tanggal_mutasi)) : '-',
             $mutasi->pengadaan->kode_inventaris ?? '-',
-            $mutasi->pengadaan->nama_barang ?? '-',
+            $mutasi->pengadaan->barang->nama_barang ?? '-',
             ucwords(str_replace('_', ' ', $mutasi->jenis_mutasi)),
             $mutasi->lokasiAsal->nama_sub_lokasi ?? '-',
             $mutasi->lokasiTujuan->nama_sub_lokasi ?? '-',
             $mutasi->pengguna_asal ?? '-',
             $mutasi->pengguna_tujuan ?? '-',
             $mutasi->alasan,
-            ucfirst($mutasi->status),
+            ucfirst($mutasi->status_mutasi),
             $mutasi->createdBy->name ?? '-',
             $mutasi->approvedBy->name ?? '-',
         ];

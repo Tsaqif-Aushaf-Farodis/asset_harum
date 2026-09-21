@@ -19,7 +19,7 @@ class LaporanPeminjamanExport implements FromCollection, WithHeadings, WithMappi
 
     public function collection()
     {
-        $query = Peminjaman::with(['pengadaan', 'peminjam', 'approvedBy']);
+        $query = Peminjaman::with(['pengadaan.barang', 'peminjam', 'kondisiKembali', 'approvedBy']);
 
         if (!empty($this->filters['status_peminjaman'])) {
             $query->where('status_peminjaman', $this->filters['status_peminjaman']);
@@ -58,15 +58,15 @@ class LaporanPeminjamanExport implements FromCollection, WithHeadings, WithMappi
         return [
             $index,
             $peminjaman->pengadaan->kode_inventaris ?? '-',
-            $peminjaman->pengadaan->nama_barang ?? '-',
-            $peminjaman->nama_peminjam,
-            $peminjaman->kontak_peminjam,
+            $peminjaman->pengadaan->barang->nama_barang ?? '-',
+            $peminjaman->peminjam_nama,
+            $peminjaman->peminjam_telepon ?? '-',
             $peminjaman->tanggal_pinjam ? date('d/m/Y', strtotime($peminjaman->tanggal_pinjam)) : '-',
             $peminjaman->tanggal_rencana_kembali ? date('d/m/Y', strtotime($peminjaman->tanggal_rencana_kembali)) : '-',
             $peminjaman->tanggal_kembali_aktual ? date('d/m/Y', strtotime($peminjaman->tanggal_kembali_aktual)) : '-',
             $peminjaman->keperluan,
             ucfirst($peminjaman->status_peminjaman),
-            $peminjaman->kondisi_kembali ?? '-',
+            $peminjaman->kondisiKembali->nama_status ?? '-',
             $peminjaman->approvedBy->name ?? '-',
         ];
     }
