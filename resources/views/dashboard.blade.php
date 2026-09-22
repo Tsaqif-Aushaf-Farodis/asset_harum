@@ -80,6 +80,49 @@
             </div>
         </div>
 
+        <!-- Nilai Barang, Perawatan & Anggaran -->
+        <div class="row g-3 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-start border-primary border-4 h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted text-uppercase mb-1 small">Nilai Buku Peralatan</h6>
+                        <h4 class="mb-0 fw-bold">Rp {{ number_format($nilaiBukuPeralatan, 0, ',', '.') }}</h4>
+                        <small class="text-muted">Perolehan Rp {{ number_format($totalNilaiAset, 0, ',', '.') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-start border-info border-4 h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted text-uppercase mb-1 small">Nilai Persediaan Perlengkapan</h6>
+                        <h4 class="mb-0 fw-bold">Rp {{ number_format($nilaiPersediaan, 0, ',', '.') }}</h4>
+                        <a href="{{ route('stok-perlengkapan.index') }}" class="small">Lihat stok</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-start border-warning border-4 h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted text-uppercase mb-1 small">Peralatan Perlu Perawatan</h6>
+                        <h4 class="mb-0 fw-bold">{{ number_format($perluPerawatan) }} <small class="text-muted fs-6">aset</small></h4>
+                        <a href="{{ route('peralatan.perawatan') }}" class="small">Lihat daftar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-start border-success border-4 h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted text-uppercase mb-1 small">Anggaran {{ $anggaranTahunIni['tahun'] }}</h6>
+                        <h4 class="mb-0 fw-bold">{{ number_format($anggaranTahunIni['summary']['persen'], 1, ',', '.') }}% terealisasi</h4>
+                        <small class="text-muted">
+                            Pagu Rp {{ number_format($anggaranTahunIni['summary']['pagu'], 0, ',', '.') }} &middot;
+                            Sisa Rp {{ number_format($anggaranTahunIni['summary']['sisa'], 0, ',', '.') }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row g-3 mb-4">
             <!-- Statistik Permohonan -->
             <div class="col-lg-6">

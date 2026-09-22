@@ -389,6 +389,35 @@ return [
                 'permohonan approve',
             ]
         ],
+        //anggaran tahunan
+        [
+            'group' => 'anggaran',
+            'pengguna' => ['admin'],
+            'access' => [
+                'anggaran view',
+                'anggaran create',
+                'anggaran edit',
+                'anggaran delete',
+            ]
+        ],
+        //stok perlengkapan
+        [
+            'group' => 'perlengkapan',
+            'pengguna' => ['admin'],
+            'access' => [
+                'perlengkapan view',
+            ]
+        ],
+        //pemakaian perlengkapan
+        [
+            'group' => 'pemakaian perlengkapan',
+            'pengguna' => ['admin'],
+            'access' => [
+                'pemakaian view',
+                'pemakaian create',
+                'pemakaian delete',
+            ]
+        ],
         
     ]
 ];

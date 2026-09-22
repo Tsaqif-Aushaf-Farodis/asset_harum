@@ -47,6 +47,12 @@ class TemplateReferensiSheet implements FromArray, WithTitle, WithStyles, WithCo
             '9. jumlah: angka bulat minimal 1.',
             '10. kode_satuan: pilih dari daftar Kode Satuan.',
             '11. harga_satuan: angka tanpa pemisah ribuan. Total dihitung otomatis.',
+            '12. KOLOM O-S HANYA UNTUK BARANG BARU (diabaikan bila barang sudah ada):',
+            '13. jenis_barang: peralatan (aset, dipakai > 1 tahun) atau perlengkapan (habis pakai).',
+            '14. disusutkan: ya / tidak (hanya peralatan). Bila ya, masa_pemakaian wajib.',
+            '15. masa_pemakaian: TAHUN untuk peralatan (lebih dari 1), BULAN (1-12) untuk perlengkapan.',
+            '16. interval_penyusutan: nilai turun tiap N tahun (default 1). Masa harus kelipatan interval.',
+            '17. butuh_perawatan: ya / tidak.',
         ];
 
         $rows = [];

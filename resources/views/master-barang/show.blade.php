@@ -71,9 +71,33 @@
                                 </div>
                                 <div class="col-md-8 form-group">: {{ $masterBarang->deskripsi_barang }}</div>
                                 <div class="col-md-4">
-                                    <label for="first-name-horizontal">Kategori Barang Id</label>
+                                    <label for="first-name-horizontal">Kategori Barang</label>
                                 </div>
-                                <div class="col-md-8 form-group">: {{ $masterBarang->kategori_barang_id }}</div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->kategori->nama_kategori_barang ?? '-' }}</div>
+                                <div class="col-md-4">
+                                    <label for="first-name-horizontal">Jenis Barang</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->isPerlengkapan() ? 'Perlengkapan (habis pakai)' : 'Peralatan (aset)' }}</div>
+                                @if ($masterBarang->isPeralatan())
+                                <div class="col-md-4">
+                                    <label for="first-name-horizontal">Disusutkan</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->disusutkan ? 'Ya' : 'Tidak' }}</div>
+                                @endif
+                                <div class="col-md-4">
+                                    <label for="first-name-horizontal">Masa Pemakaian</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->masa_pemakaian_label }}</div>
+                                @if ($masterBarang->isPeralatan() && $masterBarang->disusutkan)
+                                <div class="col-md-4">
+                                    <label for="first-name-horizontal">Nilai Turun Setiap</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->interval_penyusutan_tahun }} tahun</div>
+                                @endif
+                                <div class="col-md-4">
+                                    <label for="first-name-horizontal">Butuh Perawatan</label>
+                                </div>
+                                <div class="col-md-8 form-group">: {{ $masterBarang->butuh_perawatan ? 'Ya' : 'Tidak' }}</div>
                 </form>
             </div>
         </div>

@@ -70,6 +70,58 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bx bx-trending-down display-4 text-primary"></i>
+                        <h5 class="card-title mt-3">Laporan Penyusutan</h5>
+                        <p class="card-text text-muted">Akumulasi penyusutan dan nilai buku Peralatan</p>
+                        <a href="{{ route('laporan.penyusutan') }}" class="btn btn-primary">
+                            <i class="bx bx-file me-1"></i>Lihat Laporan
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bx bx-basket display-4 text-info"></i>
+                        <h5 class="card-title mt-3">Laporan Stok Perlengkapan</h5>
+                        <p class="card-text text-muted">Stok masuk, terpakai, sisa, dan nilai persediaan</p>
+                        <a href="{{ route('laporan.stok-perlengkapan') }}" class="btn btn-info">
+                            <i class="bx bx-file me-1"></i>Lihat Laporan
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bx bx-minus-circle display-4 text-success"></i>
+                        <h5 class="card-title mt-3">Laporan Pemakaian</h5>
+                        <p class="card-text text-muted">Riwayat pemakaian perlengkapan per lokasi dan pemakai</p>
+                        <a href="{{ route('laporan.pemakaian-perlengkapan') }}" class="btn btn-success">
+                            <i class="bx bx-file me-1"></i>Lihat Laporan
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bx bx-wallet display-4 text-warning"></i>
+                        <h5 class="card-title mt-3">Realisasi Anggaran</h5>
+                        <p class="card-text text-muted">Pagu, realisasi, sisa, dan persentase per lokasi</p>
+                        <a href="{{ route('laporan.realisasi-anggaran') }}" class="btn btn-warning">
+                            <i class="bx bx-file me-1"></i>Lihat Laporan
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </x-layout.app>

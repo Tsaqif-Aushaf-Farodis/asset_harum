@@ -9,6 +9,54 @@ $nav = [
             'permissions' => ['master-barang view']
         ],
         [
+            "title" => "Peralatan",
+            "icon" => '<i class="menu-icon tf-icons bx bx-devices"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Aset & Nilai Buku',
+                    'route' => 'peralatan.index',
+                    'permissions' => ['pengadaan-barang view']
+                ],
+                [
+                    'title' => 'Perlu Perawatan',
+                    'route' => 'peralatan.perawatan',
+                    'permissions' => ['pengadaan-barang view']
+                ],
+            ]
+        ],
+        [
+            "title" => "Perlengkapan",
+            "icon" => '<i class="menu-icon tf-icons bx bx-basket"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Stok Perlengkapan',
+                    'route' => 'stok-perlengkapan.index',
+                    'permissions' => ['perlengkapan view']
+                ],
+                [
+                    'title' => 'Pemakaian & Riwayat',
+                    'route' => 'pemakaian-perlengkapan.index',
+                    'permissions' => ['pemakaian view']
+                ],
+            ]
+        ],
+        [
+            "title" => "Anggaran",
+            "icon" => '<i class="menu-icon tf-icons bx bx-wallet"></i>',
+            "submenus" => [
+                [
+                    'title' => 'Anggaran Tahunan',
+                    'route' => 'anggaran.index',
+                    'permissions' => ['anggaran view']
+                ],
+                [
+                    'title' => 'Realisasi Anggaran',
+                    'route' => 'laporan.realisasi-anggaran',
+                    'permissions' => ['laporan view']
+                ],
+            ]
+        ],
+        [
             "title" => "Permohonan",
             "icon" => '<i class="menu-icon tf-icons bx bx-envelope"></i>',
             "route" => "permohonan.index",
@@ -95,6 +143,21 @@ $nav = [
                 [
                     'title' => 'Laporan Nilai Aset',
                     'route' => 'laporan.nilai-aset',
+                    'permissions' => ['laporan view']
+                ],
+                [
+                    'title' => 'Laporan Penyusutan',
+                    'route' => 'laporan.penyusutan',
+                    'permissions' => ['laporan view']
+                ],
+                [
+                    'title' => 'Laporan Stok Perlengkapan',
+                    'route' => 'laporan.stok-perlengkapan',
+                    'permissions' => ['laporan view']
+                ],
+                [
+                    'title' => 'Laporan Pemakaian',
+                    'route' => 'laporan.pemakaian-perlengkapan',
                     'permissions' => ['laporan view']
                 ],
             ]

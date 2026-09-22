@@ -15,6 +15,14 @@
             </div>
             <div class="card-body">
                 <form method="GET" class="row g-3 mb-4">
+                    <div class="col-md-2">
+                        <label class="form-label">Jenis</label>
+                        <select name="jenis" class="form-select">
+                            <option value="" @selected($jenis === '')>Semua</option>
+                            <option value="peralatan" @selected($jenis === 'peralatan')>Peralatan</option>
+                            <option value="perlengkapan" @selected($jenis === 'perlengkapan')>Perlengkapan</option>
+                        </select>
+                    </div>
                     <div class="col-md-3">
                         <label class="form-label">Lokasi</label>
                         <select name="lokasi_id" class="form-select">
@@ -54,6 +62,7 @@
                                 <th>No</th>
                                 <th>Kode</th>
                                 <th>Nama Barang</th>
+                                <th>Jenis</th>
                                 <th>Kategori</th>
                                 <th>Lokasi</th>
                                 <th>Jumlah</th>
@@ -70,6 +79,7 @@
                                 <td>{{ $inventaris->firstItem() + $index }}</td>
                                 <td>{{ $item->kode_inventaris }}</td>
                                 <td>{{ $item->barang->nama_barang }}</td>
+                                <td>{{ $item->barang->isPerlengkapan() ? 'Perlengkapan' : 'Peralatan' }}</td>
                                 <td>{{ $item->barang->kategori->nama_kategori_barang ?? '-' }}</td>
                                 <td>{{ $item->lokasi->nama_sub_lokasi ?? '-' }}</td>
                                 <td>{{ $item->jumlah ?? 1 }}</td>

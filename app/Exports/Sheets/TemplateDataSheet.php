@@ -49,6 +49,12 @@ class TemplateDataSheet implements FromArray, WithHeadings, WithTitle, WithColum
             'kode_satuan',
             'harga_satuan',
             'keterangan',
+            // Khusus barang BARU (kode_barang belum ada di master):
+            'jenis_barang',
+            'disusutkan',
+            'masa_pemakaian',
+            'interval_penyusutan',
+            'butuh_perawatan',
         ];
     }
 
@@ -57,7 +63,7 @@ class TemplateDataSheet implements FromArray, WithHeadings, WithTitle, WithColum
      */
     public function array(): array
     {
-        return array_fill(0, 5, array_fill(0, 14, ''));
+        return array_fill(0, 5, array_fill(0, 19, ''));
     }
 
     public function title(): string
@@ -71,6 +77,7 @@ class TemplateDataSheet implements FromArray, WithHeadings, WithTitle, WithColum
             'A' => 22, 'B' => 28, 'C' => 18, 'D' => 16, 'E' => 16,
             'F' => 12, 'G' => 18, 'H' => 12, 'I' => 14, 'J' => 18,
             'K' => 10, 'L' => 14, 'M' => 16, 'N' => 28,
+            'O' => 16, 'P' => 12, 'Q' => 16, 'R' => 18, 'S' => 16,
         ];
     }
 
@@ -81,7 +88,7 @@ class TemplateDataSheet implements FromArray, WithHeadings, WithTitle, WithColum
                 $sheet = $event->sheet->getDelegate();
                 $end = self::VALIDATION_ROWS + 1; // header is row 1
 
-                $sheet->getStyle('A1:N1')->getFont()->setBold(true);
+                $sheet->getStyle('A1:S1')->getFont()->setBold(true);
                 $sheet->freezePane('A2');
 
                 $kategoriRows = max(1, KategoriBarang::count());
@@ -96,6 +103,10 @@ class TemplateDataSheet implements FromArray, WithHeadings, WithTitle, WithColum
                 $this->applyList($sheet, 'I', $end, 'Referensi!$G$2:$G$' . (1 + $kondisiRows));
                 // kode_satuan -> Referensi column E
                 $this->applyList($sheet, 'L', $end, 'Referensi!$E$2:$E$' . (1 + $satuanRows));
+                // jenis_barang, disusutkan, butuh_perawatan (khusus barang baru) — literal list
+                $this->applyList($sheet, 'O', $end, '"peralatan,perlengkapan"');
+                $this->applyList($sheet, 'P', $end, '"ya,tidak"');
+                $this->applyList($sheet, 'S', $end, '"ya,tidak"');
             },
         ];
     }

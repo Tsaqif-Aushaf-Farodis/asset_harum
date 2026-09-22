@@ -52,7 +52,7 @@ class MutasiAsetController extends Controller implements HasMiddleware
 
     public function create()
     {
-        $pengadaanBarang = PengadaanBarang::aktif()->get();
+        $pengadaanBarang = PengadaanBarang::peralatan()->aktif()->get();
         $lokasi = MasterSubLokasi::all();
         $users = User::all();
 
@@ -98,7 +98,7 @@ class MutasiAsetController extends Controller implements HasMiddleware
             return redirect()->route('mutasi-aset.index')->with('error', 'Hanya mutasi dengan status pending yang dapat diedit');
         }
 
-        $pengadaanBarang = PengadaanBarang::aktif()->get();
+        $pengadaanBarang = PengadaanBarang::peralatan()->aktif()->get();
         $lokasi = MasterSubLokasi::all();
         $users = User::all();
 

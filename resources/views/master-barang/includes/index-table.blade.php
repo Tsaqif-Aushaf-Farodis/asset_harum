@@ -9,6 +9,8 @@
                 <th class="align-middle">Merk Barang</th>
                 <th class="align-middle">Tipe Barang</th>
                 <th class="align-middle">Tahun Barang</th>
+                <th class="align-middle">Jenis</th>
+                <th class="align-middle">Penyusutan</th>
                 <th class="text-center">Aksi</th>
             </tr>
         </thead>
@@ -22,6 +24,25 @@
                 <td>{{ $row?->merk_barang }}</td>
                 <td>{{ $row?->tipe_barang }}</td>
                 <td>{{ $row?->tahun_barang }}</td>
+                <td>
+                    @if ($row->isPerlengkapan())
+                        <span class="badge bg-label-info">Perlengkapan</span>
+                    @else
+                        <span class="badge bg-label-primary">Peralatan</span>
+                    @endif
+                    @if ($row->butuh_perawatan)
+                        <span class="badge bg-label-warning" title="Butuh perawatan">Perawatan</span>
+                    @endif
+                </td>
+                <td>
+                    @if ($row->isPerlengkapan())
+                        <span class="text-muted">Habis pakai (nilai 0 saat dipakai)</span>
+                    @elseif ($row->disusutkan)
+                        {{ $row->masa_pemakaian_label }}, turun tiap {{ $row->interval_penyusutan_tahun }} tahun
+                    @else
+                        <span class="text-muted">Tidak disusutkan</span>
+                    @endif
+                </td>
                 <td class="text-center">
                     <div class="btn-group" role="group">
                         @can('master-barang view')

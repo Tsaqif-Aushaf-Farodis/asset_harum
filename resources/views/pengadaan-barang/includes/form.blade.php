@@ -23,7 +23,7 @@
         <div class="mb-4">
             <label for="tanggal_pengadaan" class="form-label">Tanggal Pengadaan</label>
             <x-input.daterangepicker name1="tanggal_pengadaan"
-                value1="{{ old('tanggal_pengadaan',  $pengadaanBarang?->sumber) }}"
+                value1="{{ old('tanggal_pengadaan', $pengadaanBarang?->tanggal_pengadaan) }}"
                 placeholder="Pilih Tanggal Pengadaan" opens="right" singleDatePicker="true" :ranges="false" />
             @error('tanggal_pengadaan')<small class="invalid-feedback">{{ $message }}</small>@enderror
         </div>
@@ -38,7 +38,7 @@
                 )" selected="{{ old('status', $pengadaanBarang?->status) }}" />
             @error('status')<small class="invalid-feedback">{{ $message }}</small>@enderror
         </div>
-        <div class="mb-4">
+        <div class="mb-4" id="blok-kondisi">
             <label for="status_id" class="form-label">Kondisi</label>
             <x-input.select2 name="status_id" id="status_id"
                 class="form-control {{ $errors->has('status_id') ? 'is-invalid' : '' }}" placeholder="Pilih Status"
@@ -79,6 +79,30 @@
             @error('total_harga')<small class="invalid-feedback">{{ $message }}</small>@enderror
         </div>
 
+        <div class="mb-4" id="blok-disusutkan-aset" style="display:none">
+            <label for="disusutkan" class="form-label">Penyusutan Aset Ini</label>
+            @php
+                $disusutkanNilai = old('disusutkan', is_null($pengadaanBarang?->disusutkan) ? '' : (int) $pengadaanBarang->disusutkan);
+            @endphp
+            <select name="disusutkan" id="disusutkan" class="form-select {{ $errors->has('disusutkan') ? 'is-invalid' : '' }}">
+                <option value="" @selected($disusutkanNilai === '' || $disusutkanNilai === null)>Ikut Master Barang</option>
+                <option value="1" @selected((string) $disusutkanNilai === '1')>Disusutkan</option>
+                <option value="0" @selected((string) $disusutkanNilai === '0')>Tidak disusutkan</option>
+            </select>
+            <small class="text-muted" id="info-disusutkan-master"></small>
+            @error('disusutkan')<small class="invalid-feedback d-block">{{ $message }}</small>@enderror
+        </div>
+
+        <div class="mb-4">
+            <label for="anggaran_id" class="form-label">Anggaran (opsional)</label>
+            <x-input.select2 name="anggaran_id" id="anggaran_id"
+                class="form-control {{ $errors->has('anggaran_id') ? 'is-invalid' : '' }}"
+                placeholder="Pilih Anggaran" clearable="true" :options="$anggaranList"
+                selected="{{ old('anggaran_id', $pengadaanBarang?->anggaran_id) }}" />
+            <small class="text-muted">Terisi otomatis dari tahun pengadaan dan lokasi bila anggarannya tersedia.</small>
+            @error('anggaran_id')<small class="invalid-feedback d-block">{{ $message }}</small>@enderror
+        </div>
+
         @push('script')
         <script>
             function parseCurrency(val) {
@@ -106,8 +130,39 @@
                 updateTotalHarga();
             });
 
+            const barangMeta = @json($barangMeta);
+            const lokasiInduk = @json($lokasiInduk);
+            const anggaranMap = @json($anggaranMap);
+
+            function sinkronJenis() {
+                const meta = barangMeta[$('#barang_id').val()];
+                const perlengkapan = !!meta && meta.jenis === 'perlengkapan';
+                $('#blok-kondisi').toggle(!perlengkapan);
+                $('#blok-disusutkan-aset').toggle(!!meta && !perlengkapan);
+                if (meta && !perlengkapan) {
+                    $('#info-disusutkan-master').text('Di Master Barang: ' + (meta.disusutkan ? 'disusutkan' : 'tidak disusutkan') + '.');
+                }
+            }
+
+            function pilihAnggaranOtomatis() {
+                if ($('#anggaran_id').val()) return; // jangan menimpa pilihan pengguna
+                const tanggal = $('#tanggal_pengadaan').val() || '';
+                const lokasi = lokasiInduk[$('#lokasi_id').val()];
+                const id = anggaranMap[tanggal.substring(0, 4) + '-' + lokasi];
+                if (id) $('#anggaran_id').val(id).trigger('change');
+            }
+
             $(document).ready(function() {
                 updateTotalHarga();
+                sinkronJenis();
+                $('#barang_id').on('change', sinkronJenis);
+                $('#lokasi_id').on('change', pilihAnggaranOtomatis);
+                $(document).on('apply.daterangepicker', '.date-range-picker-wrapper input[type=text]', function () {
+                    setTimeout(pilihAnggaranOtomatis, 50);
+                });
+                @if (!$pengadaanBarang?->exists)
+                    setTimeout(pilihAnggaranOtomatis, 300);
+                @endif
             });
         </script>
         @endpush

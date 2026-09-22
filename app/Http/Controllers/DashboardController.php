@@ -13,14 +13,22 @@ use App\Models\Peminjaman;
 use App\Models\KategoriBarang;
 use App\Models\MasterLokasi;
 use Illuminate\Support\Facades\DB;
+use App\Services\LaporanAsetService;
+use App\Services\PerlengkapanService;
 
 class DashboardController extends Controller
 {
     public function index(): View
     {
         // Statistik Utama
-        $totalAset = PengadaanBarang::where('is_active', true)->count();
-        $totalNilaiAset = PengadaanBarang::where('is_active', true)->sum('total_harga');
+        // Aset = Peralatan saja; Perlengkapan dihitung terpisah sebagai persediaan.
+        $totalAset = PengadaanBarang::peralatan()->where('is_active', true)->count();
+        $totalNilaiAset = PengadaanBarang::peralatan()->where('is_active', true)->sum('total_harga');
+        $nilaiBukuPeralatan = PengadaanBarang::peralatan()->where('is_active', true)->with('barang')->get()
+            ->sum(fn ($a) => $a->nilaiSaatIni());
+        $nilaiPersediaan = PerlengkapanService::batch()->sum(fn ($b) => $b->nilaiSaatIni());
+        $perluPerawatan = PengadaanBarang::peralatan()->butuhPerawatan()->where('is_active', true)->count();
+        $anggaranTahunIni = LaporanAsetService::realisasiAnggaran(['tahun' => date('Y')]);
         $totalBarang = MasterBarang::where('is_active', true)->count();
         $totalLokasi = MasterLokasi::count();
 
@@ -41,10 +49,10 @@ class DashboardController extends Controller
 
         // Statistik Inventaris/Pengadaan
         $inventarisStats = [
-            'total' => PengadaanBarang::count(),
-            'aktif' => PengadaanBarang::where('is_active', true)->count(),
-            'dipinjam' => PengadaanBarang::where('is_borrowed', true)->count(),
-            'tahun_ini' => PengadaanBarang::whereYear('tanggal_pengadaan', date('Y'))->count(),
+            'total' => PengadaanBarang::peralatan()->count(),
+            'aktif' => PengadaanBarang::peralatan()->where('is_active', true)->count(),
+            'dipinjam' => PengadaanBarang::peralatan()->where('is_borrowed', true)->count(),
+            'tahun_ini' => PengadaanBarang::peralatan()->whereYear('tanggal_pengadaan', date('Y'))->count(),
         ];
 
         // Statistik Mutasi
@@ -74,6 +82,7 @@ class DashboardController extends Controller
         $topKategori = PengadaanBarang::select('master_barang.kategori_barang_id', 'kategori_barang.nama_kategori_barang', DB::raw('COUNT(*) as total'))
             ->join('master_barang', 'pengadaan_barang.barang_id', '=', 'master_barang.id')
             ->join('kategori_barang', 'master_barang.kategori_barang_id', '=', 'kategori_barang.id')
+            ->where('master_barang.jenis_barang', 'peralatan')
             ->where('pengadaan_barang.is_active', true)
             ->groupBy('master_barang.kategori_barang_id', 'kategori_barang.nama_kategori_barang')
             ->orderBy('total', 'desc')
@@ -84,6 +93,8 @@ class DashboardController extends Controller
         $topLokasi = PengadaanBarang::select('master_sub_lokasi.lokasi_id', 'master_lokasi.nama_lokasi', DB::raw('COUNT(*) as total'))
             ->join('master_sub_lokasi', 'pengadaan_barang.lokasi_id', '=', 'master_sub_lokasi.id')
             ->join('master_lokasi', 'master_sub_lokasi.lokasi_id', '=', 'master_lokasi.id')
+            ->join('master_barang', 'pengadaan_barang.barang_id', '=', 'master_barang.id')
+            ->where('master_barang.jenis_barang', 'peralatan')
             ->where('pengadaan_barang.is_active', true)
             ->groupBy('master_sub_lokasi.lokasi_id', 'master_lokasi.nama_lokasi')
             ->orderBy('total', 'desc')
@@ -109,7 +120,7 @@ class DashboardController extends Controller
             ->get();
 
         // Aset Terbaru (5 terakhir)
-        $asetTerbaru = PengadaanBarang::with(['barang', 'subLokasi.lokasi'])
+        $asetTerbaru = PengadaanBarang::peralatan()->with(['barang', 'subLokasi.lokasi'])
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
@@ -117,6 +128,10 @@ class DashboardController extends Controller
         return view('dashboard', compact(
             'totalAset',
             'totalNilaiAset',
+            'nilaiBukuPeralatan',
+            'nilaiPersediaan',
+            'perluPerawatan',
+            'anggaranTahunIni',
             'totalBarang',
             'totalLokasi',
             'permohonanStats',

@@ -17,6 +17,9 @@ use App\Http\Controllers\MutasiAsetController;
 use App\Http\Controllers\OpnameController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\AnggaranController;
+use App\Http\Controllers\StokPerlengkapanController;
+use App\Http\Controllers\PemakaianPerlengkapanController;
 use Illuminate\Support\Facades\Route;
 
 require('auth.php');
@@ -47,7 +50,21 @@ Route::middleware('auth')->group(function () {
     Route::post('pengadaan-barang/import/preview', [PengadaanBarangController::class, 'previewImport'])->name('pengadaan-barang.import.preview');
     Route::post('pengadaan-barang/import/store', [PengadaanBarangController::class, 'storeImport'])->name('pengadaan-barang.import.store');
 
+    // Menu Peralatan: pengadaan-barang yang difilter jenis (nilai buku) & butuh perawatan
+    Route::get('peralatan', [PengadaanBarangController::class, 'index'])
+        ->defaults('jenis', 'peralatan')->name('peralatan.index');
+    Route::get('peralatan/perlu-perawatan', [PengadaanBarangController::class, 'index'])
+        ->defaults('jenis', 'peralatan')->defaults('perawatan', true)->name('peralatan.perawatan');
+
     Route::resource('pengadaan-barang', PengadaanBarangController::class);
+
+    // Anggaran tahunan (per lokasi)
+    Route::resource('anggaran', AnggaranController::class)->except(['show']);
+
+    // Perlengkapan: stok & pemakaian
+    Route::get('stok-perlengkapan', [StokPerlengkapanController::class, 'index'])->name('stok-perlengkapan.index');
+    Route::resource('pemakaian-perlengkapan', PemakaianPerlengkapanController::class)
+        ->only(['index', 'create', 'store', 'destroy']);
     Route::resource('master-sub-lokasi', MasterSubLokasiController::class);
     
     Route::resource('permohonan', \App\Http\Controllers\PermohonanController::class);
@@ -93,6 +110,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/opname', [LaporanController::class, 'opname'])->name('laporan.opname');
     Route::get('/laporan/peminjaman', [LaporanController::class, 'peminjaman'])->name('laporan.peminjaman');
     Route::get('/laporan/nilai-aset', [LaporanController::class, 'nilaiAset'])->name('laporan.nilai-aset');
+    Route::get('/laporan/penyusutan', [LaporanController::class, 'penyusutan'])->name('laporan.penyusutan');
+    Route::get('/laporan/stok-perlengkapan', [LaporanController::class, 'stokPerlengkapan'])->name('laporan.stok-perlengkapan');
+    Route::get('/laporan/pemakaian-perlengkapan', [LaporanController::class, 'pemakaianPerlengkapan'])->name('laporan.pemakaian-perlengkapan');
+    Route::get('/laporan/realisasi-anggaran', [LaporanController::class, 'realisasiAnggaran'])->name('laporan.realisasi-anggaran');
+    Route::get('/laporan/penyusutan/export', [LaporanController::class, 'exportPenyusutan'])->name('laporan.penyusutan.export');
+    Route::get('/laporan/stok-perlengkapan/export', [LaporanController::class, 'exportStokPerlengkapan'])->name('laporan.stok-perlengkapan.export');
+    Route::get('/laporan/pemakaian-perlengkapan/export', [LaporanController::class, 'exportPemakaianPerlengkapan'])->name('laporan.pemakaian-perlengkapan.export');
+    Route::get('/laporan/realisasi-anggaran/export', [LaporanController::class, 'exportRealisasiAnggaran'])->name('laporan.realisasi-anggaran.export');
     Route::get('/laporan/inventaris/export', [LaporanController::class, 'exportInventaris'])->name('laporan.inventaris.export');
     Route::get('/laporan/mutasi/export', [LaporanController::class, 'exportMutasi'])->name('laporan.mutasi.export');
     Route::get('/laporan/peminjaman/export', [LaporanController::class, 'exportPeminjaman'])->name('laporan.peminjaman.export');

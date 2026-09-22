@@ -73,6 +73,13 @@
                                 @error('sub_lokasi_id')<small class="text-danger">{{ $message }}</small>@enderror
                             </div>
                             <div class="mb-3">
+                                <label class="form-label">Anggaran (opsional)</label>
+                                <x-input.select2 name="anggaran_id" :options="$anggaranList"
+                                    placeholder="Pilih Anggaran" clearable="true" />
+                                <small class="text-muted">Dikaitkan ke seluruh baris pada file ini.</small>
+                                @error('anggaran_id')<small class="text-danger d-block">{{ $message }}</small>@enderror
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">File Template (.xlsx)</label>
                                 <input type="file" name="file" accept=".xlsx,.xls"
                                     class="form-control {{ $errors->has('file') ? 'is-invalid' : '' }}" required>

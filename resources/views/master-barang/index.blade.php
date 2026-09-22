@@ -16,6 +16,19 @@
                         </div>
                     @endcan
                     
+                    <div class="col-12 col-md-auto">
+                        <select name="jenis" id="filter-jenis" class="form-select"
+                            hx-get="{{ route('master-barang.index') }}"
+                            hx-trigger="change"
+                            hx-target="#master-barang-table"
+                            hx-push-url="true"
+                            hx-include="[name='search'], #filter-checkboxes input:checked">
+                            <option value="">Semua Jenis</option>
+                            <option value="peralatan" @selected(request('jenis') === 'peralatan')>Peralatan</option>
+                            <option value="perlengkapan" @selected(request('jenis') === 'perlengkapan')>Perlengkapan</option>
+                        </select>
+                    </div>
+
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="input-group">
                             <input 
@@ -29,7 +42,7 @@
                                 hx-target="#master-barang-table"
                                 hx-push-url="true"
                                 hx-indicator="#search-loading"
-                                hx-include="#filter-checkboxes input:checked"
+                                hx-include="#filter-checkboxes input:checked, #filter-jenis"
                             >
 
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button"

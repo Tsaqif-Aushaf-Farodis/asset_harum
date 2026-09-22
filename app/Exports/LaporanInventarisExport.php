@@ -37,6 +37,13 @@ class LaporanInventarisExport implements FromCollection, WithHeadings, WithMappi
             $query->whereYear('tanggal_pengadaan', $this->filters['tahun_perolehan']);
         }
 
+        $jenis = $this->filters['jenis'] ?? 'peralatan';
+        if ($jenis === 'peralatan') {
+            $query->peralatan();
+        } elseif ($jenis === 'perlengkapan') {
+            $query->perlengkapan();
+        }
+
         return $query->orderBy('kode_inventaris')->get();
     }
 

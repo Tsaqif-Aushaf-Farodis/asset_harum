@@ -15,14 +15,26 @@ use App\Exports\LaporanInventarisExport;
 use App\Exports\LaporanMutasiExport;
 use App\Exports\LaporanPeminjamanExport;
 use App\Exports\LaporanNilaiAsetExport;
+use App\Exports\LaporanPenyusutanExport;
+use App\Exports\LaporanStokPerlengkapanExport;
+use App\Exports\LaporanPemakaianPerlengkapanExport;
+use App\Exports\LaporanRealisasiAnggaranExport;
+use App\Http\Controllers\PemakaianPerlengkapanController;
+use App\Models\Anggaran;
+use App\Models\KategoriBarang;
+use App\Models\MasterBarang;
+use App\Models\MasterLokasi;
+use App\Models\PemakaianPerlengkapan;
+use App\Services\LaporanAsetService;
+use App\Services\PerlengkapanService;
 
 class LaporanController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:laporan view', only: ['index','inventaris','mutasi','opname','peminjaman','nilaiAset']),
-            new Middleware('permission:laporan export', only: ['exportInventaris','exportMutasi','exportPeminjaman','exportNilaiAset']),
+            new Middleware('permission:laporan view', only: ['index','inventaris','mutasi','opname','peminjaman','nilaiAset','penyusutan','stokPerlengkapan','pemakaianPerlengkapan','realisasiAnggaran']),
+            new Middleware('permission:laporan export', only: ['exportInventaris','exportMutasi','exportPeminjaman','exportNilaiAset','exportPenyusutan','exportStokPerlengkapan','exportPemakaianPerlengkapan','exportRealisasiAnggaran']),
         ];
     }
 
@@ -51,10 +63,18 @@ class LaporanController extends Controller implements HasMiddleware
             $query->whereYear('tanggal_pengadaan', $request->tahun_perolehan);
         }
 
-        $inventaris = $query->orderBy('kode_inventaris')->paginate(50);
+        // Default hanya Peralatan (aset); pilih "Semua" untuk menyertakan Perlengkapan.
+        $jenis = $request->has('jenis') ? (string) $request->jenis : 'peralatan';
+        if ($jenis === 'peralatan') {
+            $query->peralatan();
+        } elseif ($jenis === 'perlengkapan') {
+            $query->perlengkapan();
+        }
+
+        $inventaris = $query->orderBy('kode_inventaris')->paginate(50)->withQueryString();
         $lokasi = MasterSubLokasi::all();
 
-        return view('laporan.inventaris', compact('inventaris', 'lokasi'));
+        return view('laporan.inventaris', compact('inventaris', 'lokasi', 'jenis'));
     }
 
     public function mutasi(Request $request)
@@ -114,43 +134,75 @@ class LaporanController extends Controller implements HasMiddleware
 
     public function nilaiAset(Request $request)
     {
-        $query = PengadaanBarang::aktif()->with(['barang.kategori', 'lokasi']);
+        $filters = $request->only(['jenis', 'lokasi_id', 'kategori_id', 'per_tanggal']);
+        $data = LaporanAsetService::nilaiAset($filters);
 
-        if ($request->filled('lokasi_id')) {
-            $query->where('lokasi_id', $request->lokasi_id);
-        }
-
-        if ($request->filled('kategori_id')) {
-            $query->whereHas('barang', fn ($q) => $q->where('kategori_barang_id', $request->kategori_id));
-        }
-
-        $inventaris = $query->orderBy('kode_inventaris')->get();
-
-        $summary = [
-            'total_aset' => $inventaris->count(),
-            'total_nilai' => $inventaris->sum('harga_satuan'),
-            'per_kategori' => $inventaris->groupBy('barang.kategori.nama_kategori_barang')->map(function($items) {
-                return [
-                    'jumlah' => $items->count(),
-                    'nilai' => $items->sum('harga_satuan'),
-                ];
-            }),
-            'per_lokasi' => $inventaris->groupBy('lokasi.nama_sub_lokasi')->map(function($items) {
-                return [
-                    'jumlah' => $items->count(),
-                    'nilai' => $items->sum('harga_satuan'),
-                ];
-            }),
-        ];
-
+        $inventaris = $data['rows'];
+        $summary = $data['summary'];
+        $asOf = $data['as_of'];
         $lokasi = MasterSubLokasi::all();
+        $kategori = KategoriBarang::orderBy('nama_kategori_barang')->get();
 
-        return view('laporan.nilai-aset', compact('inventaris', 'summary', 'lokasi'));
+        return view('laporan.nilai-aset', compact('inventaris', 'summary', 'lokasi', 'kategori', 'asOf'));
     }
 
+    public function penyusutan(Request $request)
+    {
+        $data = LaporanAsetService::penyusutan($request->only(['lokasi_id', 'kategori_id', 'per_tanggal', 'semua']));
+
+        $rows = $data['rows'];
+        $summary = $data['summary'];
+        $asOf = $data['as_of'];
+        $lokasi = MasterSubLokasi::all();
+        $kategori = KategoriBarang::orderBy('nama_kategori_barang')->get();
+
+        return view('laporan.penyusutan', compact('rows', 'summary', 'asOf', 'lokasi', 'kategori'));
+    }
+
+    public function stokPerlengkapan(Request $request)
+    {
+        $batch = PerlengkapanService::batch($request->only(['lokasi_id', 'barang_id', 'search', 'hanya_sisa']));
+        $ringkasan = PerlengkapanService::ringkasan($batch);
+        $lokasi = MasterSubLokasi::with('lokasi')->get();
+        $barangList = MasterBarang::perlengkapan()->orderBy('nama_barang')->pluck('nama_barang', 'id');
+
+        return view('laporan.stok-perlengkapan', compact('batch', 'ringkasan', 'lokasi', 'barangList'));
+    }
+
+    public function pemakaianPerlengkapan(Request $request)
+    {
+        $filters = $request->only(['tanggal_mulai', 'tanggal_akhir', 'barang_id', 'lokasi_id', 'pemakai']);
+
+        $query = PemakaianPerlengkapanController::filterQuery(
+            PemakaianPerlengkapan::with(['pengadaan.barang', 'pengadaan.satuan', 'lokasi.lokasi']),
+            $filters
+        )->orderByDesc('tanggal_pemakaian')->orderByDesc('id');
+
+        $totalNilai = (float) (clone $query)->selectRaw('COALESCE(SUM(jumlah * harga_satuan), 0) as total')->reorder()->value('total');
+        $totalJumlah = (int) (clone $query)->reorder()->sum('jumlah');
+        $pemakaian = $query->paginate(50)->withQueryString();
+
+        $lokasi = MasterSubLokasi::with('lokasi')->get();
+        $barangList = MasterBarang::perlengkapan()->orderBy('nama_barang')->pluck('nama_barang', 'id');
+
+        return view('laporan.pemakaian-perlengkapan', compact('pemakaian', 'totalNilai', 'totalJumlah', 'lokasi', 'barangList'));
+    }
+
+    public function realisasiAnggaran(Request $request)
+    {
+        $data = LaporanAsetService::realisasiAnggaran($request->only(['tahun', 'lokasi_id']));
+
+        $tahunList = Anggaran::select('tahun')->distinct()->orderByDesc('tahun')->pluck('tahun');
+        if (!$tahunList->contains($data['tahun'])) {
+            $tahunList->prepend($data['tahun']);
+        }
+        $lokasiList = MasterLokasi::orderBy('nama_lokasi')->pluck('nama_lokasi', 'id');
+
+        return view('laporan.realisasi-anggaran', array_merge($data, compact('tahunList', 'lokasiList')));
+    }
     public function exportInventaris(Request $request)
     {
-        $filters = $request->only(['lokasi_id', 'kategori_id', 'is_active', 'tahun_perolehan']);
+        $filters = $request->only(['lokasi_id', 'kategori_id', 'is_active', 'tahun_perolehan', 'jenis']);
         return Excel::download(new LaporanInventarisExport($filters), 'laporan-inventaris-' . date('Y-m-d') . '.xlsx');
     }
 
@@ -168,7 +220,30 @@ class LaporanController extends Controller implements HasMiddleware
 
     public function exportNilaiAset(Request $request)
     {
-        $filters = $request->only(['lokasi_id', 'kategori_id']);
+        $filters = $request->only(['jenis', 'lokasi_id', 'kategori_id', 'per_tanggal']);
         return Excel::download(new LaporanNilaiAsetExport($filters), 'laporan-nilai-aset-' . date('Y-m-d') . '.xlsx');
+    }
+    public function exportPenyusutan(Request $request)
+    {
+        $filters = $request->only(['lokasi_id', 'kategori_id', 'per_tanggal', 'semua']);
+        return Excel::download(new LaporanPenyusutanExport($filters), 'laporan-penyusutan-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function exportStokPerlengkapan(Request $request)
+    {
+        $filters = $request->only(['lokasi_id', 'barang_id', 'search', 'hanya_sisa']);
+        return Excel::download(new LaporanStokPerlengkapanExport($filters), 'laporan-stok-perlengkapan-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function exportPemakaianPerlengkapan(Request $request)
+    {
+        $filters = $request->only(['tanggal_mulai', 'tanggal_akhir', 'barang_id', 'lokasi_id', 'pemakai']);
+        return Excel::download(new LaporanPemakaianPerlengkapanExport($filters), 'laporan-pemakaian-perlengkapan-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function exportRealisasiAnggaran(Request $request)
+    {
+        $filters = $request->only(['tahun', 'lokasi_id']);
+        return Excel::download(new LaporanRealisasiAnggaranExport($filters), 'laporan-realisasi-anggaran-' . date('Y-m-d') . '.xlsx');
     }
 }

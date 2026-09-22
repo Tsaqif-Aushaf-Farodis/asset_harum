@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\PengadaanBarang;
+use App\Services\LaporanAsetService;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -13,6 +13,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class LaporanNilaiAsetExport implements FromCollection, WithHeadings, WithMapping, WithTitle, WithEvents
 {
     protected $filters;
+    private int $index = 0;
 
     public function __construct($filters = [])
     {
@@ -21,17 +22,7 @@ class LaporanNilaiAsetExport implements FromCollection, WithHeadings, WithMappin
 
     public function collection()
     {
-        $query = PengadaanBarang::aktif()->with(['barang.kategori', 'lokasi']);
-
-        if (!empty($this->filters['lokasi_id'])) {
-            $query->where('lokasi_id', $this->filters['lokasi_id']);
-        }
-
-        if (!empty($this->filters['kategori_id'])) {
-            $query->whereHas('barang', fn ($q) => $q->where('kategori_barang_id', $this->filters['kategori_id']));
-        }
-
-        return $query->orderBy('kode_inventaris')->get();
+        return LaporanAsetService::nilaiAset($this->filters)['rows'];
     }
 
     public function headings(): array
@@ -40,28 +31,34 @@ class LaporanNilaiAsetExport implements FromCollection, WithHeadings, WithMappin
             'No',
             'Kode Inventaris',
             'Nama Barang',
+            'Jenis',
             'Kategori',
             'Lokasi',
             'Jumlah',
             'Harga Satuan',
-            'Total Nilai',
+            'Nilai Perolehan',
+            'Penyusutan / Terpakai',
+            'Nilai Saat Ini',
         ];
     }
 
-    public function map($barang): array
+    public function map($row): array
     {
-        static $index = 0;
-        $index++;
+        $this->index++;
+        $p = $row->pengadaan;
 
         return [
-            $index,
-            $barang->kode_inventaris,
-            $barang->barang->nama_barang ?? '-',
-            $barang->barang->kategori->nama_kategori_barang ?? '-',
-            $barang->lokasi->nama_sub_lokasi ?? '-',
-            $barang->jumlah ?? 1,
-            $barang->harga_satuan ?? 0,
-            ($barang->jumlah ?? 1) * ($barang->harga_satuan ?? 0),
+            $this->index,
+            $p->kode_inventaris,
+            $p->barang->nama_barang ?? '-',
+            $row->jenis,
+            $p->barang->kategori->nama_kategori_barang ?? '-',
+            $p->lokasi->nama_sub_lokasi ?? '-',
+            $p->jumlah ?? 1,
+            $p->harga_satuan ?? 0,
+            $row->nilai_perolehan,
+            $row->pengurang,
+            $row->nilai_saat_ini,
         ];
     }
 
@@ -75,14 +72,14 @@ class LaporanNilaiAsetExport implements FromCollection, WithHeadings, WithMappin
         return [
             AfterSheet::class => function(AfterSheet $event) {
                 $highestRow = $event->sheet->getDelegate()->getHighestRow();
-                
-                // Add total row
-                $event->sheet->getDelegate()->setCellValue('G' . ($highestRow + 1), 'TOTAL:');
-                $event->sheet->getDelegate()->setCellValue('H' . ($highestRow + 1), '=SUM(H2:H' . $highestRow . ')');
-                
-                // Style total row
-                $event->sheet->getDelegate()->getStyle('G' . ($highestRow + 1) . ':H' . ($highestRow + 1))
-                    ->getFont()->setBold(true);
+                $total = $highestRow + 1;
+
+                $event->sheet->getDelegate()->setCellValue('H' . $total, 'TOTAL:');
+                foreach (['I', 'J', 'K'] as $col) {
+                    $event->sheet->getDelegate()->setCellValue($col . $total, "=SUM({$col}2:{$col}{$highestRow})");
+                }
+
+                $event->sheet->getDelegate()->getStyle("H{$total}:K{$total}")->getFont()->setBold(true);
             },
         ];
     }

@@ -74,7 +74,7 @@ class OpnameController extends Controller implements HasMiddleware
         ]);
 
         // Generate opname details for all active assets
-        $query = PengadaanBarang::aktif();
+        $query = PengadaanBarang::peralatan()->aktif();
         
         if ($request->lokasi_id) {
             $query->where('lokasi_id', $request->lokasi_id);

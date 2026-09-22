@@ -17,7 +17,11 @@
                             <span class="text-muted">({{ $subLokasi->kode_sub_lokasi }})</span>
                         </p>
                     </div>
-                    <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <div class="col-md-6 mt-3 mt-md-0">
+                        <h6 class="text-muted mb-1">Anggaran</h6>
+                        <p class="mb-0 fw-semibold">{{ $anggaran ? $anggaran->label : 'Tidak dikaitkan anggaran' }}</p>
+                    </div>
+                    <div class="col-12 text-md-end mt-3">
                         <span class="badge bg-success me-1">{{ $validCount }} valid</span>
                         <span class="badge bg-danger me-1">{{ $errorCount }} error</span>
                         <span class="badge bg-info">{{ $newBarangCount }} barang baru</span>
@@ -39,6 +43,7 @@
                             @csrf
                             <input type="hidden" name="token" value="{{ $token }}">
                             <input type="hidden" name="sub_lokasi_id" value="{{ $subLokasi->id }}">
+                            <input type="hidden" name="anggaran_id" value="{{ $anggaran?->id }}">
                             <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="bx bx-save me-1"></i>Simpan {{ $validCount }} Data
                             </button>
@@ -63,6 +68,7 @@
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
                                     <th>Kategori</th>
+                                    <th>Jenis</th>
                                     <th>Sumber</th>
                                     <th>Kondisi</th>
                                     <th>Tanggal</th>
@@ -95,6 +101,7 @@
                                         <td>{{ $r['kode_barang'] }}</td>
                                         <td>{{ $r['nama_barang'] }}</td>
                                         <td>{{ $r['kategori'] }}</td>
+                                        <td>{{ $r['jenis_barang'] ? ucfirst($r['jenis_barang']) : '-' }}</td>
                                         <td>{{ $r['sumber'] }}</td>
                                         <td>{{ $r['kondisi'] }}</td>
                                         <td>{{ $r['tanggal_pengadaan'] }}</td>

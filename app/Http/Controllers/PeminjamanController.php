@@ -51,7 +51,7 @@ class PeminjamanController extends Controller implements HasMiddleware
 
     public function create()
     {
-        $pengadaanBarang = PengadaanBarang::aktif()->where('is_borrowed', false)->get();
+        $pengadaanBarang = PengadaanBarang::peralatan()->aktif()->where('is_borrowed', false)->get();
         $users = User::all();
 
         return view('peminjaman.create', compact('pengadaanBarang', 'users'));
@@ -107,7 +107,7 @@ class PeminjamanController extends Controller implements HasMiddleware
             return redirect()->route('peminjaman.index')->with('error', 'Hanya peminjaman dengan status pending yang dapat diedit');
         }
 
-        $pengadaanBarang = PengadaanBarang::aktif()->where('is_borrowed', false)->get();
+        $pengadaanBarang = PengadaanBarang::peralatan()->aktif()->where('is_borrowed', false)->get();
         $users = User::all();
 
         return view('peminjaman.edit', compact('peminjaman', 'pengadaanBarang', 'users'));

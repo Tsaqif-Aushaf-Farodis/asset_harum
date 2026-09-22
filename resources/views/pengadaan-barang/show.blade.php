@@ -44,53 +44,48 @@
                 </div>
             </div>
             <div class="card-body">
-                <form class="row g-3">
-                    
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Kode Inventaris</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->kode_inventaris }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Barang Id</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->barang_id }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Lokasi Id</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->lokasi_id }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Sumber</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->sumber }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Status Id</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->status_id }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Tanggal Pengadaan</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->tanggal_pengadaan }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Jumlah</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->jumlah }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Satuan Id</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->satuan_id }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Harga Satuan</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->harga_satuan }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Total Harga</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->total_harga }}</div>
-                                <div class="col-md-4">
-                                    <label for="first-name-horizontal">Keterangan</label>
-                                </div>
-                                <div class="col-md-8 form-group">: {{ $pengadaanBarang->keterangan }}</div>
-                </form>
+                @php
+                    $perlengkapan = $pengadaanBarang->barang?->isPerlengkapan();
+                    $susut = $perlengkapan ? null : $pengadaanBarang->penyusutan();
+                    $baris = [
+                        'Kode Inventaris' => $pengadaanBarang->kode_inventaris,
+                        'Barang' => $pengadaanBarang->barang->nama_barang ?? '-',
+                        'Jenis' => $perlengkapan ? 'Perlengkapan (stok)' : 'Peralatan (aset)',
+                        'Kategori' => $pengadaanBarang->barang->kategori->nama_kategori_barang ?? '-',
+                        'Lokasi' => ($pengadaanBarang->lokasi->lokasi->nama_lokasi ?? '-') . ' - ' . ($pengadaanBarang->lokasi->nama_sub_lokasi ?? '-'),
+                        'Sumber' => $pengadaanBarang->sumber,
+                        'Status' => $pengadaanBarang->status,
+                        'Kondisi' => $pengadaanBarang->statusKondisi->nama_status ?? '-',
+                        'Tanggal Pengadaan' => $pengadaanBarang->tanggal_pengadaan,
+                        'Jumlah' => $pengadaanBarang->jumlah . ' ' . ($pengadaanBarang->satuan->nama_satuan ?? ''),
+                        'Harga Satuan' => \App\Helpers\Format::rupiah($pengadaanBarang->harga_satuan),
+                        'Total Harga' => \App\Helpers\Format::rupiah($pengadaanBarang->total_harga),
+                        'Anggaran' => $pengadaanBarang->anggaran ? $pengadaanBarang->anggaran->label : 'Belum dikaitkan anggaran',
+                    ];
+                    if ($perlengkapan) {
+                        $baris['Sudah Dipakai'] = $pengadaanBarang->stok_terpakai;
+                        $baris['Sisa Stok'] = $pengadaanBarang->stok_tersedia;
+                        $baris['Nilai Persediaan'] = \App\Helpers\Format::rupiah($pengadaanBarang->nilaiSaatIni());
+                    } else {
+                        $baris['Penyusutan'] = $susut['disusutkan']
+                            ? 'Disusutkan: turun ' . \App\Helpers\Format::rupiah($susut['penyusutan_per_langkah']) . ' tiap ' . $susut['interval_tahun'] . ' tahun'
+                                . ($pengadaanBarang->disusutkan_diatur_manual ? ' (diatur manual pada aset ini)' : '')
+                            : 'Tidak disusutkan' . ($pengadaanBarang->disusutkan_diatur_manual ? ' (diatur manual pada aset ini)' : '');
+                        $baris['Akumulasi Penyusutan'] = \App\Helpers\Format::rupiah($susut['akumulasi']);
+                        $baris['Nilai Buku Saat Ini'] = \App\Helpers\Format::rupiah($susut['nilai_buku']);
+                        if ($susut['tanggal_penyusutan_berikutnya']) {
+                            $baris['Penurunan Nilai Berikutnya'] = $susut['tanggal_penyusutan_berikutnya']->format('d/m/Y');
+                        }
+                        $baris['Butuh Perawatan'] = $pengadaanBarang->barang?->butuh_perawatan ? 'Ya' : 'Tidak';
+                    }
+                    $baris['Keterangan'] = $pengadaanBarang->keterangan;
+                @endphp
+                <div class="row g-3">
+                    @foreach ($baris as $label => $nilai)
+                        <div class="col-md-4"><label>{{ $label }}</label></div>
+                        <div class="col-md-8 form-group">: {{ $nilai }}</div>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
